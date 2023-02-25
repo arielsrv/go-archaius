@@ -4,7 +4,7 @@ go 1.20
 
 require (
 	github.com/Shonminh/apollo-client v0.4.0
-	github.com/fsnotify/fsnotify v1.4.7
+	github.com/fsnotify/fsnotify v1.6.0
 	github.com/go-chassis/foundation v0.4.0
 	github.com/go-chassis/kie-client v0.2.0
 	github.com/go-chassis/openlog v1.1.3
@@ -26,5 +26,5 @@ require (
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	go.uber.org/ratelimit v0.1.0 // indirect
 	golang.org/x/net v0.0.0-20210405180319-a5a99cb37ef4 // indirect
-	golang.org/x/sys v0.0.0-20210603081109-ebe580a85c40 // indirect
+	golang.org/x/sys v0.0.0-20220908164124-27713097b956 // indirect
 )
