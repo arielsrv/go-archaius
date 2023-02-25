@@ -3,7 +3,7 @@ module github.com/arielsrv/go-archaius
 go 1.20
 
 require (
-	github.com/Shonminh/apollo-client v0.4.0
+	github.com/Shonminh/apollo-client v0.6.0
 	github.com/fsnotify/fsnotify v1.4.7
 	github.com/go-chassis/foundation v0.4.0
 	github.com/go-chassis/kie-client v0.2.0
@@ -22,6 +22,9 @@ require (
 	github.com/go-chassis/cari v0.6.0 // indirect
 	github.com/hashicorp/errwrap v1.0.0 // indirect
 	github.com/hashicorp/go-multierror v1.0.0 // indirect
+	github.com/json-iterator/go v1.1.11 // indirect
+	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
+	github.com/modern-go/reflect2 v1.0.1 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	go.uber.org/ratelimit v0.1.0 // indirect
