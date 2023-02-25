@@ -3,8 +3,9 @@ package apollo
 import (
 	"errors"
 	"fmt"
-	"github.com/sirupsen/logrus"
 	"sync"
+
+	"github.com/sirupsen/logrus"
 
 	apollo "github.com/Shonminh/apollo-client"
 	"github.com/arielsrv/go-archaius"
@@ -12,7 +13,7 @@ import (
 	"github.com/arielsrv/go-archaius/source"
 )
 
-// Source apollo source
+// Source apollo source.
 type Source struct {
 	priority int
 	sync.RWMutex
@@ -23,13 +24,13 @@ type Source struct {
 const (
 	defaultApolloSourcePriority = 0 // default priority is 0
 	apolloSourceName            = "ApolloConfigSource"
-	// AppID app id const
+	// AppID app id const.
 	AppID = "app_id"
-	// NamespaceList namespace list const
+	// NamespaceList namespace list const.
 	NamespaceList = "namespace_list"
-	// Cluster cluster const
+	// Cluster cluster const.
 	Cluster = "cluster"
-	// ignore namespace
+	// ignore namespace.
 	IgnoreNameSpace = "ignoreNameSpace"
 
 	Ignore = "true"
@@ -39,7 +40,7 @@ var (
 	gStartApolloOnce sync.Once
 )
 
-// init function
+// init function.
 func init() {
 	archaius.InstallRemoteSource(archaius.ApolloSource, NewApolloSource)
 }
@@ -90,7 +91,7 @@ func (as *Source) GetConfigurations() (map[string]interface{}, error) {
 	return configMap, nil
 }
 
-// GetConfigurationByKey get config by key, key's format is: {namespace}.field1.field2
+// GetConfigurationByKey get config by key, key's format is: {namespace}.field1.field2.
 func (as *Source) GetConfigurationByKey(key string) (interface{}, error) {
 	value, err := apollo.GetConfigByKey(key)
 	if err != nil {
@@ -110,43 +111,43 @@ func (as *Source) Watch(callBack source.EventHandler) error {
 	return nil
 }
 
-// GetPriority get priority
+// GetPriority get priority.
 func (as *Source) GetPriority() int {
 	return as.priority
 }
 
-// SetPriority set priority
+// SetPriority set priority.
 func (as *Source) SetPriority(priority int) {
 	as.priority = priority
 }
 
-// Cleanup clean apollo cache from apollo client
+// Cleanup clean apollo cache from apollo client.
 func (as *Source) Cleanup() error {
 	apollo.Cleanup()
 	return nil
 }
 
-// GetSourceName get source name
+// GetSourceName get source name.
 func (as *Source) GetSourceName() string {
 	return apolloSourceName
 }
 
-// AddDimensionInfo no use
+// AddDimensionInfo no use.
 func (as *Source) AddDimensionInfo(labels map[string]string) error {
 	return nil
 }
 
-// Set no use
+// Set no use.
 func (as *Source) Set(key string, value interface{}) error {
 	return nil
 }
 
-// Delete no use
+// Delete no use.
 func (as *Source) Delete(key string) error {
 	return nil
 }
 
-// UpdateCallback callback function when config updates
+// UpdateCallback callback function when config updates.
 func (as *Source) UpdateCallback(apolloEvent *apollo.ChangeEvent) error {
 	if as.eventHandler != nil {
 		var es = make([]*event.Event, len(apolloEvent.Changes))
@@ -174,7 +175,7 @@ func (as *Source) UpdateCallback(apolloEvent *apollo.ChangeEvent) error {
 	return nil
 }
 
-// transformEventType transform change type
+// transformEventType transform change type.
 func transformEventType(changeType apollo.ConfigChangeType) string {
 	switch changeType {
 	case apollo.ADDED:

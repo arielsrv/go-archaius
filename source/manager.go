@@ -24,33 +24,34 @@ package source
 import (
 	"errors"
 	"fmt"
-	"github.com/sirupsen/logrus"
-	"gopkg.in/yaml.v3"
 	"io"
 	"reflect"
 	"regexp"
 	"sync"
 
+	"github.com/sirupsen/logrus"
+	"gopkg.in/yaml.v3"
+
 	"github.com/arielsrv/go-archaius/event"
 )
 
-// errors
+// errors.
 var (
 	ErrKeyNotExist   = errors.New("key does not exist")
 	ErrIgnoreChange  = errors.New("ignore key changed")
 	ErrWriterInvalid = errors.New("writer is invalid")
 )
 
-// const
+// const.
 const (
-	//DefaultPriority gives the default priority
+	//DefaultPriority gives the default priority.
 	DefaultPriority      = -1
 	fmtInvalidKeyWithErr = "invalid key format for %s key. key registration ignored: %s"
 	fmtInvalidKey        = "invalid key format for %s key"
 	fmtLoadConfigFailed  = "fail to load configuration of %s source: %s"
 )
 
-// Manager manage all sources and config from them
+// Manager manage all sources and config from them.
 type Manager struct {
 	sourceMapMux sync.RWMutex
 	Sources      map[string]ConfigSource
@@ -60,7 +61,7 @@ type Manager struct {
 	dispatcher *event.Dispatcher
 }
 
-// NewManager creates an object of Manager
+// NewManager creates an object of Manager.
 func NewManager() *Manager {
 	configMgr := new(Manager)
 	configMgr.dispatcher = event.NewDispatcher()
@@ -68,7 +69,7 @@ func NewManager() *Manager {
 	return configMgr
 }
 
-// Cleanup close and cleanup config manager channel
+// Cleanup close and cleanup config manager channel.
 func (m *Manager) Cleanup() error {
 	// cleanup all dynamic handler
 	m.sourceMapMux.RLock()
@@ -82,7 +83,7 @@ func (m *Manager) Cleanup() error {
 	return nil
 }
 
-// Set call set of all sources
+// Set call set of all sources.
 func (m *Manager) Set(k string, v interface{}) error {
 	m.sourceMapMux.RLock()
 	defer m.sourceMapMux.RUnlock()
@@ -96,7 +97,7 @@ func (m *Manager) Set(k string, v interface{}) error {
 	return nil
 }
 
-// Delete call Delete of all sources
+// Delete call Delete of all sources.
 func (m *Manager) Delete(k string) error {
 	m.sourceMapMux.RLock()
 	defer m.sourceMapMux.RUnlock()
@@ -131,7 +132,7 @@ func (m *Manager) Unmarshal(obj interface{}) error {
 	return m.unmarshal(rv, doNotConsiderTag)
 }
 
-// Marshal function is used to write all configuration by yaml
+// Marshal function is used to write all configuration by yaml.
 func (m *Manager) Marshal(w io.Writer) error {
 	if w == nil {
 		logrus.Error("invalid writer")
@@ -153,7 +154,7 @@ func (m *Manager) Marshal(w io.Writer) error {
 	return encode.Encode(allConfig)
 }
 
-// AddSource adds a source to configurationManager
+// AddSource adds a source to configurationManager.
 func (m *Manager) AddSource(source ConfigSource) error {
 	if source == nil || source.GetSourceName() == "" {
 		err := errors.New("nil or invalid source supplied")
@@ -211,7 +212,7 @@ func (m *Manager) pullSourceConfigs(source string) error {
 	return nil
 }
 
-// Configs returns all the key values
+// Configs returns all the key values.
 func (m *Manager) Configs() map[string]interface{} {
 	config := make(map[string]interface{}, 0)
 
@@ -248,7 +249,7 @@ func (m *Manager) ConfigsWithSourceNames() map[string]interface{} {
 	return config
 }
 
-// AddDimensionInfo adds the dimensionInfo to the list of which configurations needs to be pulled
+// AddDimensionInfo adds the dimensionInfo to the list of which configurations needs to be pulled.
 func (m *Manager) AddDimensionInfo(labels map[string]string) (map[string]string, error) {
 	config := make(map[string]string, 0)
 
@@ -261,7 +262,7 @@ func (m *Manager) AddDimensionInfo(labels map[string]string) (map[string]string,
 	return config, nil
 }
 
-// Refresh reload the configurations of a source
+// Refresh reload the configurations of a source.
 func (m *Manager) Refresh(sourceName string) error {
 	err := m.pullSourceConfigs(sourceName)
 	if err != nil {
@@ -306,9 +307,8 @@ func (m *Manager) addDimensionInfo(labels map[string]string) error {
 	return nil
 }
 
-// IsKeyExist check if key exist in cache
+// IsKeyExist check if key exist in cache.
 func (m *Manager) IsKeyExist(key string) bool {
-
 	if _, ok := m.ConfigurationMap.Load(key); ok {
 		return true
 	}
@@ -316,7 +316,7 @@ func (m *Manager) IsKeyExist(key string) bool {
 	return false
 }
 
-// GetConfig returns the value for a particular key from cache
+// GetConfig returns the value for a particular key from cache.
 func (m *Manager) GetConfig(key string) interface{} {
 	sourceName, ok := m.ConfigurationMap.Load(key)
 	if !ok {
@@ -446,14 +446,13 @@ func (m *Manager) updateEvent(e *event.Event) error {
 				m.ConfigurationMap.Store(e.Key, source.GetSourceName())
 			}
 		}
-
 	}
 
 	e.HasUpdated = true
 	return nil
 }
 
-// OnEvent Triggers actions when an event is generated
+// OnEvent Triggers actions when an event is generated.
 func (m *Manager) OnEvent(event *event.Event) {
 	err := m.updateEvent(event)
 	if err != nil {
@@ -466,7 +465,7 @@ func (m *Manager) OnEvent(event *event.Event) {
 	m.dispatcher.DispatchEvent(event)
 }
 
-// OnModuleEvent Triggers actions when events are generated
+// OnModuleEvent Triggers actions when events are generated.
 func (m *Manager) OnModuleEvent(event []*event.Event) {
 	if err := m.updateModuleEvent(event); err != nil {
 		logrus.Error("failed in updating events with error: " + err.Error())
@@ -518,7 +517,7 @@ func (m *Manager) getHighPrioritySource(srcNameA, srcNameB string) ConfigSource 
 	return sourceB
 }
 
-// RegisterListener Function to Register all listener for different key changes
+// RegisterListener Function to Register all listener for different key changes.
 func (m *Manager) RegisterListener(listenerObj event.Listener, keys ...string) error {
 	for _, key := range keys {
 		_, err := regexp.Compile(key)
@@ -531,7 +530,7 @@ func (m *Manager) RegisterListener(listenerObj event.Listener, keys ...string) e
 	return m.dispatcher.RegisterListener(listenerObj, keys...)
 }
 
-// UnRegisterListener remove listener
+// UnRegisterListener remove listener.
 func (m *Manager) UnRegisterListener(listenerObj event.Listener, keys ...string) error {
 	for _, key := range keys {
 		_, err := regexp.Compile(key)
@@ -544,7 +543,7 @@ func (m *Manager) UnRegisterListener(listenerObj event.Listener, keys ...string)
 	return m.dispatcher.UnRegisterListener(listenerObj, keys...)
 }
 
-// RegisterModuleListener Function to Register all moduleListener for different key(prefix) changes
+// RegisterModuleListener Function to Register all moduleListener for different key(prefix) changes.
 func (m *Manager) RegisterModuleListener(listenerObj event.ModuleListener, prefixes ...string) error {
 	for _, prefix := range prefixes {
 		if prefix == "" {
@@ -556,7 +555,7 @@ func (m *Manager) RegisterModuleListener(listenerObj event.ModuleListener, prefi
 	return m.dispatcher.RegisterModuleListener(listenerObj, prefixes...)
 }
 
-// UnRegisterModuleListener remove moduleListener
+// UnRegisterModuleListener remove moduleListener.
 func (m *Manager) UnRegisterModuleListener(listenerObj event.ModuleListener, prefixes ...string) error {
 	for _, prefix := range prefixes {
 		if prefix == "" {

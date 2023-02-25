@@ -9,7 +9,6 @@ type Test struct {
 }
 
 func TestEncode(t *testing.T) {
-
 	testSerilizer := &Serializer{}
 	test := &Test{Team: "data"}
 	_, err := testSerilizer.Encode(test)
@@ -19,7 +18,6 @@ func TestEncode(t *testing.T) {
 	}
 }
 func TestDecode(t *testing.T) {
-
 	testSerilizer := &Serializer{}
 	test := &Test{Team: "data"}
 

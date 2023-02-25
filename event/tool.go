@@ -20,7 +20,7 @@ import (
 	"reflect"
 )
 
-// PopulateEvents compare old and new configurations to generate events that need to be updated
+// PopulateEvents compare old and new configurations to generate events that need to be updated.
 func PopulateEvents(sourceName string, currentConfig, updatedConfig map[string]interface{}) ([]*Event, error) {
 	events := make([]*Event, 0)
 
@@ -36,7 +36,6 @@ func PopulateEvents(sourceName string, currentConfig, updatedConfig map[string]i
 		} else {
 			events = append(events, constructEvent(sourceName, Create, key, value))
 		}
-
 	}
 
 	// generate delete event

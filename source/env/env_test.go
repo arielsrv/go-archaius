@@ -38,15 +38,12 @@ func (t *TestDynamicConfigHandler) OnModuleEvent(events []*event.Event) {
 func (t *TestDynamicConfigHandler) OnEvent(e *event.Event) {}
 
 func populatEnvConfiguration() {
-
 	os.Setenv("testenvkey1", "envkey1")
 	os.Setenv("testenvkey2", "envkey2")
 	os.Setenv("testenvkey3", "a=b=c")
-
 }
 
 func TestEnvConfigurationSource(t *testing.T) {
-
 	populatEnvConfiguration()
 	envsource := env.NewEnvConfigurationSource()
 	t.Run("set env with underscore, use dot to get ", func(t *testing.T) {

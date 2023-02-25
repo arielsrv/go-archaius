@@ -23,10 +23,11 @@ package source
 import (
 	"errors"
 	"fmt"
-	"github.com/sirupsen/logrus"
 	"reflect"
 	"strings"
 	"unicode"
+
+	"github.com/sirupsen/logrus"
 
 	"github.com/spf13/cast"
 )
@@ -43,7 +44,7 @@ const (
 /*
 unmarshal configurations on supplied object.
 multi level configuration key structure > source.module.type.config: value
-simple key structure > config: value
+simple key structure > config: value.
 */
 func (m *Manager) unmarshal(rValue reflect.Value, tagName string) (err error) {
 	// handle panic
@@ -86,7 +87,7 @@ func (m *Manager) unmarshal(rValue reflect.Value, tagName string) (err error) {
 	return nil
 }
 
-// handle pointer type objects
+// handle pointer type objects.
 func (m *Manager) handlePtr(rValue reflect.Value, tagName string) error {
 	if rValue.IsNil() {
 		ptrValue := reflect.New(rValue.Type().Elem())
@@ -116,7 +117,7 @@ func (m *Manager) handlePtr(rValue reflect.Value, tagName string) error {
 	return nil
 }
 
-// get multi level configuration key
+// get multi level configuration key.
 func getTagKey(currentTag, addTag string) string {
 	if currentTag == doNotConsiderTag && addTag == doNotConsiderTag {
 		return doNotConsiderTag
@@ -129,7 +130,7 @@ func getTagKey(currentTag, addTag string) string {
 	return currentTag + `.` + addTag
 }
 
-// handle struct type object
+// handle struct type object.
 func (m *Manager) handleStruct(rValue reflect.Value, tagName string) error {
 	structType := rValue.Type()
 	numOfField := structType.NumField()
@@ -177,7 +178,7 @@ func (m *Manager) handleStruct(rValue reflect.Value, tagName string) error {
 	return nil
 }
 
-// handle map
+// handle map.
 func (m *Manager) handleMap(rValueForInline, rValue reflect.Value, tagName string) error {
 	if tagName == doNotConsiderTag {
 		if rValue.CanSet() {
@@ -260,7 +261,6 @@ func (m *Manager) getMapKeys(configValue map[string]interface{}, prefix string, 
 	}
 
 	return prefixForInline, inlineVal, mapKeys
-
 }
 
 func (m *Manager) setValuesForInline(mapValueType reflect.Type, inlineVal, prefixForInline []string, rValue reflect.Value) (reflect.Value, error) {
@@ -285,7 +285,7 @@ func (m *Manager) setValuesForInline(mapValueType reflect.Type, inlineVal, prefi
 	return rValue, nil
 }
 
-// generate map from config map
+// generate map from config map.
 func (m *Manager) populateMap(prefix string, mapType reflect.Type, rValues reflect.Value) (reflect.Value, error) {
 	tagList := m.getTagList(prefix, rValues)
 
@@ -309,7 +309,6 @@ func (m *Manager) populateMap(prefix string, mapType reflect.Type, rValues refle
 			setVal := reflect.ValueOf(val)
 			if mapType != setVal.Type() {
 				return rValue, fmt.Errorf("invalid value for map %s", mapType.String())
-
 			}
 			if rValue.CanSet() {
 				rValue.Set(setVal)
@@ -457,7 +456,6 @@ func checkPrefixForInline(prefix string, tagList []string, configValue map[strin
 }
 
 func checkPrefix(heap, prefix string) (bool, int) {
-
 	if len(heap) < len(prefix) {
 		return false, 0
 	}
@@ -476,7 +474,7 @@ func checkPrefix(heap, prefix string) (bool, int) {
 	return true, index
 }
 
-// set values in object
+// set values in object.
 func (m *Manager) setValue(rValue reflect.Value, keyName string) error {
 	configValue := m.GetConfig(keyName)
 	if configValue == nil {
@@ -499,7 +497,7 @@ func (m *Manager) setValue(rValue reflect.Value, keyName string) error {
 	return nil
 }
 
-// get key from tag
+// get key from tag.
 func (*Manager) getKeyName(fieldName string, fieldTagName reflect.StructTag) string {
 	tagName := fieldTagName.Get(configClientTag)
 	if tagName == "-" {
@@ -515,7 +513,7 @@ func (*Manager) getKeyName(fieldName string, fieldTagName reflect.StructTag) str
 	return tagName
 }
 
-// convert camel case to snake case
+// convert camel case to snake case.
 func toSnake(in string) string {
 	runes := []rune(in)
 	length := len(runes)
@@ -532,7 +530,7 @@ func toSnake(in string) string {
 	return string(out)
 }
 
-// ToRvalueType Deserializes the object to a particular type
+// ToRvalueType Deserializes the object to a particular type.
 func (m *Manager) toRvalueType(confValue interface{}, rValue reflect.Value) (returnValue reflect.Value, err error) {
 	convertType := rValue.Type()
 	returnValue = reflect.New(convertType).Elem()
@@ -571,7 +569,7 @@ func (m *Manager) toRvalueType(confValue interface{}, rValue reflect.Value) (ret
 	return returnValue, err
 }
 
-// toArrayType Deserializes the Array to a particular type
+// toArrayType Deserializes the Array to a particular type.
 func (m *Manager) toArrayType(confValue interface{}, rValue reflect.Value) (returnValue reflect.Value, err error) {
 	convertType := rValue.Type()
 	returnValue = reflect.New(convertType).Elem()
@@ -609,7 +607,7 @@ func (m *Manager) toArrayType(confValue interface{}, rValue reflect.Value) (retu
 	return returnValue, err
 }
 
-// ToRvalueType Deserializes the Struct to a particular type
+// ToRvalueType Deserializes the Struct to a particular type.
 func (m *Manager) toStructType(confValue interface{}, rValue reflect.Value) (returnValue reflect.Value, err error) {
 	structType := rValue.Type()
 	returnValue = reflect.New(structType).Elem()
@@ -631,7 +629,7 @@ func (m *Manager) toStructType(confValue interface{}, rValue reflect.Value) (ret
 	return returnValue, err
 }
 
-// ToRvalueType Deserializes the Ptr to a particular type
+// ToRvalueType Deserializes the Ptr to a particular type.
 func (m *Manager) toPtrType(confValue interface{}, rValue reflect.Value) (returnValue reflect.Value, err error) {
 	convertType := rValue.Type()
 	returnValue = reflect.New(convertType).Elem()

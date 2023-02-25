@@ -6,7 +6,7 @@ import (
 	"github.com/arielsrv/go-archaius/source/util"
 )
 
-// RemoteInfo has attribute for config center source initialization
+// RemoteInfo has attribute for config center source initialization.
 type RemoteInfo struct {
 	//required.
 	//Key value can be in different namespace, we call it dimension.
@@ -35,7 +35,7 @@ type RemoteInfo struct {
 	ProjectID     string
 }
 
-// Options hold options
+// Options hold options.
 type Options struct {
 	RequiredFiles []string
 	OptionalFiles []string
@@ -47,17 +47,17 @@ type Options struct {
 	UseMemSource  bool
 }
 
-// Option is a func
+// Option is a func.
 type Option func(options *Options)
 
-// WithRequiredFiles tell archaius to manage files, if not exist will return error
+// WithRequiredFiles tell archaius to manage files, if not exist will return error.
 func WithRequiredFiles(f []string) Option {
 	return func(options *Options) {
 		options.RequiredFiles = f
 	}
 }
 
-// WithOptionalFiles tell archaius to manage files, if not exist will NOT return error
+// WithOptionalFiles tell archaius to manage files, if not exist will NOT return error.
 func WithOptionalFiles(f []string) Option {
 	return func(options *Options) {
 		options.OptionalFiles = f
@@ -65,14 +65,14 @@ func WithOptionalFiles(f []string) Option {
 }
 
 // WithDefaultFileHandler let user custom handler
-// you can decide how to convert file into kv pairs
+// you can decide how to convert file into kv pairs.
 func WithDefaultFileHandler(handler util.FileHandler) Option {
 	return func(options *Options) {
 		options.FileHandler = handler
 	}
 }
 
-// WithRemoteSource accept the information for initiating a remote source
+// WithRemoteSource accept the information for initiating a remote source.
 func WithRemoteSource(provider string, ri *RemoteInfo) Option {
 	return func(options *Options) {
 		options.RemoteInfo = ri
@@ -81,7 +81,7 @@ func WithRemoteSource(provider string, ri *RemoteInfo) Option {
 }
 
 // WithCommandLineSource enable cmd line source
-// archaius will read command line params as key value
+// archaius will read command line params as key value.
 func WithCommandLineSource() Option {
 	return func(options *Options) {
 		options.UseCLISource = true
@@ -89,32 +89,31 @@ func WithCommandLineSource() Option {
 }
 
 // WithENVSource enable env source
-// archaius will read ENV as key value
+// archaius will read ENV as key value.
 func WithENVSource() Option {
 	return func(options *Options) {
 		options.UseENVSource = true
 	}
 }
 
-// WithMemorySource accept the information for initiating a Memory source
+// WithMemorySource accept the information for initiating a Memory source.
 func WithMemorySource() Option {
 	return func(options *Options) {
 		options.UseMemSource = true
 	}
 }
 
-// FileOptions for AddFile func
+// FileOptions for AddFile func.
 type FileOptions struct {
 	Handler util.FileHandler
 }
 
-// FileOption is a func
+// FileOption is a func.
 type FileOption func(options *FileOptions)
 
-// WithFileHandler use custom handler
+// WithFileHandler use custom handler.
 func WithFileHandler(h util.FileHandler) FileOption {
 	return func(options *FileOptions) {
 		options.Handler = h
 	}
-
 }

@@ -9,7 +9,6 @@ import (
 )
 
 func TestCast(t *testing.T) {
-
 	var configvalue interface{}
 	var err error
 

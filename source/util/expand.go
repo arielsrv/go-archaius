@@ -10,7 +10,7 @@ import (
 // the underscore character ( _), and can't begin with number.
 const envVariable = `\${([a-zA-Z_]{1}[\w]+)((?:\,\,|\^\^)?)[\|]{2}(.*?)}`
 
-// reg exp
+// reg exp.
 var variableReg *regexp.Regexp
 
 func init() {

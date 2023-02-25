@@ -19,10 +19,11 @@ package kie
 import (
 	"context"
 	"fmt"
-	"github.com/sirupsen/logrus"
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/sirupsen/logrus"
 
 	"github.com/arielsrv/go-archaius/source/remote"
 	"github.com/arielsrv/go-archaius/source/util/queue"
@@ -33,20 +34,20 @@ import (
 // One dimension corresponds to one label combination.
 type DimensionName string
 
-// Priority of dimension in dimensionPrecedence array must from low to high
+// Priority of dimension in dimensionPrecedence array must from low to high.
 var dimensionPrecedence = []DimensionName{
 	DimensionApp,
 	DimensionService,
 }
 
-// const
+// const.
 const (
 	defaultWaitTime                = 30
 	DimensionApp     DimensionName = "app"
 	DimensionService DimensionName = "service"
 )
 
-// Kie is Implementation
+// Kie is Implementation.
 type Kie struct {
 	c    *client.Client
 	opts remote.Options
@@ -58,14 +59,14 @@ type Kie struct {
 	dimensions map[DimensionName]*Dimension
 }
 
-// Dimension contains a label combination and the configuration corresponding to this label combination
+// Dimension contains a label combination and the configuration corresponding to this label combination.
 type Dimension struct {
 	sync.RWMutex
 	labels map[string]string
 	config map[string]interface{}
 }
 
-// NewKie is a return a new kie client
+// NewKie is a return a new kie client.
 func NewKie(options remote.Options) (*Kie, error) {
 	if options.ServerURI == "" {
 		return nil, remote.ErrInvalidEP
@@ -119,7 +120,7 @@ func initDimensions(optionsLabels map[string]string) (map[DimensionName]*Dimensi
 	return dimensions, nil
 }
 
-// PullConfigs is the implementation of Kie to pull all the configurations from Config-Server
+// PullConfigs is the implementation of Kie to pull all the configurations from Config-Server.
 func (k *Kie) PullConfigs(labels ...map[string]string) (map[string]interface{}, error) {
 	var revisionLock sync.Mutex
 	var validRevisions []int
@@ -162,7 +163,7 @@ func (k *Kie) PullConfigs(labels ...map[string]string) (map[string]interface{}, 
 	return k.mergeConfig(), nil
 }
 
-// Watch watch the configuration changes and update in real time
+// Watch watch the configuration changes and update in real time.
 func (k *Kie) Watch(f func(map[string]interface{}), errHandler func(err error), labels map[string]string) error {
 	for _, dimension := range dimensionPrecedence {
 		go k.watchKVDimensionally(f, errHandler, dimension)
@@ -255,7 +256,7 @@ func (k *Kie) getDimensionLabels(dimension DimensionName) map[string]string {
 	return k.dimensions[dimension].labels
 }
 
-// Options return options
+// Options return options.
 func (k *Kie) Options() remote.Options {
 	return k.opts
 }

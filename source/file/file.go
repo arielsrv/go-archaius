@@ -20,8 +20,6 @@ package filesource
 import (
 	"errors"
 	"fmt"
-	"github.com/sirupsen/logrus"
-	"io/ioutil"
 	"math"
 	"os"
 	"path/filepath"
@@ -30,6 +28,8 @@ import (
 	"sync"
 	"time"
 
+	"github.com/sirupsen/logrus"
+
 	"github.com/arielsrv/go-archaius/event"
 	"github.com/arielsrv/go-archaius/source"
 	"github.com/arielsrv/go-archaius/source/util"
@@ -37,32 +37,32 @@ import (
 )
 
 const (
-	//FileConfigSourceConst is a variable of type string
+	//FileConfigSourceConst is a variable of type string.
 	FileConfigSourceConst = "FileSource"
 	fileSourcePriority    = 4
-	//DefaultFilePriority is a variable of type string
+	//DefaultFilePriority is a variable of type string.
 	DefaultFilePriority = 0
 )
 
-// FileSourceTypes is a string
+// FileSourceTypes is a string.
 type FileSourceTypes string
 
 const (
-	//RegularFile is a variable of type string
+	//RegularFile is a variable of type string.
 	RegularFile FileSourceTypes = "RegularFile"
-	//Directory is a variable of type string
+	//Directory is a variable of type string.
 	Directory FileSourceTypes = "Directory"
-	//InvalidFileType is a variable of type string
+	//InvalidFileType is a variable of type string.
 	InvalidFileType FileSourceTypes = "InvalidType"
 )
 
-// ConfigInfo is s struct
+// ConfigInfo is s struct.
 type ConfigInfo struct {
 	FilePath string
 	Value    interface{}
 }
 
-// Source is file source
+// Source is file source.
 type Source struct {
 	Configurations map[string]*ConfigInfo
 	files          []file
@@ -94,13 +94,13 @@ type watch struct {
   	TODO: Currently file sources priority not considered. if key conflicts then latest key will get considered
 */
 
-// FileSource is a interface
+// FileSource is a interface.
 type FileSource interface {
 	source.ConfigSource
 	AddFile(filePath string, priority uint32, handler util.FileHandler) error
 }
 
-// NewFileSource creates a source which can handler local files
+// NewFileSource creates a source which can handler local files.
 func NewFileSource() FileSource {
 	fileConfigSource := new(Source)
 	fileConfigSource.priority = fileSourcePriority
@@ -109,7 +109,7 @@ func NewFileSource() FileSource {
 	return fileConfigSource
 }
 
-// AddFile add file and manage configs
+// AddFile add file and manage configs.
 func (fSource *Source) AddFile(p string, priority uint32, handle util.FileHandler) error {
 	path, err := filepath.Abs(p)
 	if err != nil {
@@ -183,7 +183,6 @@ func fileType(fs *os.File) FileSourceTypes {
 }
 
 func (fSource *Source) handleDirectory(dir *os.File, priority uint32, handle util.FileHandler) error {
-
 	filesInfo, err := dir.Readdir(-1)
 	if err != nil {
 		return errors.New("failed to read Directory contents")
@@ -204,14 +203,13 @@ func (fSource *Source) handleDirectory(dir *os.File, priority uint32, handle uti
 				err.Error()))
 		}
 		fs.Close()
-
 	}
 
 	return nil
 }
 
 func (fSource *Source) handleFile(file *os.File, priority uint32, handle util.FileHandler) error {
-	Content, err := ioutil.ReadFile(file.Name())
+	Content, err := os.ReadFile(file.Name())
 	if err != nil {
 		return err
 	}
@@ -246,7 +244,6 @@ func (fSource *Source) handlePriority(filePath string, priority uint32) error {
 	newFilePriority := make([]file, 0)
 	var prioritySet bool
 	for _, f := range fSource.files {
-
 		if f.filePath == filePath && f.priority == priority {
 			prioritySet = true
 			newFilePriority = append(newFilePriority, file{
@@ -270,7 +267,7 @@ func (fSource *Source) handlePriority(filePath string, priority uint32) error {
 	return nil
 }
 
-// GetConfigurations get all configs
+// GetConfigurations get all configs.
 func (fSource *Source) GetConfigurations() (map[string]interface{}, error) {
 	configMap := make(map[string]interface{})
 
@@ -288,7 +285,7 @@ func (fSource *Source) GetConfigurations() (map[string]interface{}, error) {
 	return configMap, nil
 }
 
-// GetConfigurationByKey get one key value
+// GetConfigurationByKey get one key value.
 func (fSource *Source) GetConfigurationByKey(key string) (interface{}, error) {
 	fSource.RLock()
 	defer fSource.RUnlock()
@@ -306,22 +303,22 @@ func (fSource *Source) GetConfigurationByKey(key string) (interface{}, error) {
 	return nil, source.ErrKeyNotExist
 }
 
-// GetSourceName get name of source
+// GetSourceName get name of source.
 func (*Source) GetSourceName() string {
 	return FileConfigSourceConst
 }
 
-// GetPriority get precedence
+// GetPriority get precedence.
 func (fSource *Source) GetPriority() int {
 	return fSource.priority
 }
 
-// SetPriority custom priority
+// SetPriority custom priority.
 func (fSource *Source) SetPriority(priority int) {
 	fSource.priority = priority
 }
 
-// Watch watch change event
+// Watch watch change event.
 func (fSource *Source) Watch(callback source.EventHandler) error {
 	if callback == nil {
 		return errors.New("call back can not be nil")
@@ -422,7 +419,7 @@ func (wth *watch) watchFile() {
 				logrus.Debug("user default file handler")
 				handle = util.Convert2JavaProps
 			}
-			content, err := ioutil.ReadFile(event.Name)
+			content, err := os.ReadFile(event.Name)
 			if err != nil {
 				logrus.Error("read file error " + err.Error())
 				continue
@@ -448,7 +445,6 @@ func (wth *watch) watchFile() {
 			return
 		}
 	}
-
 }
 
 func (fSource *Source) compareUpdate(configs map[string]interface{}, filePath string) []*event.Event {
@@ -512,13 +508,11 @@ func (fSource *Source) compareUpdate(configs map[string]interface{}, filePath st
 				if priority == filePathPriority {
 					fileConfs[key] = confInfo
 					logrus.Info(fmt.Sprintf("Two files have same priority. keeping %s value", confInfo.FilePath))
-
 				} else if filePathPriority < priority { // lower the vale higher is the priority
 					confInfo.Value = newConfValue
 					fileConfs[key] = confInfo
 					events = append(events, &event.Event{EventSource: FileConfigSourceConst,
 						Key: key, EventType: event.Update, Value: newConfValue})
-
 				} else {
 					fileConfs[key] = confInfo
 				}
@@ -559,7 +553,7 @@ func (fSource *Source) addOrCreateConf(fileConfs map[string]*ConfigInfo, newconf
 	return fileConfs, events
 }
 
-// Cleanup clear all configs
+// Cleanup clear all configs.
 func (fSource *Source) Cleanup() error {
 	fSource.filelock.Lock()
 	defer fSource.filelock.Unlock()
@@ -573,17 +567,17 @@ func (fSource *Source) Cleanup() error {
 	return nil
 }
 
-// AddDimensionInfo  is none function
+// AddDimensionInfo  is none function.
 func (fSource *Source) AddDimensionInfo(labels map[string]string) error {
 	return nil
 }
 
-// Set no use
+// Set no use.
 func (fSource *Source) Set(key string, value interface{}) error {
 	return nil
 }
 
-// Delete no use
+// Delete no use.
 func (fSource *Source) Delete(key string) error {
 	return nil
 }

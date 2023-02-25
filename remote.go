@@ -22,18 +22,18 @@ import "github.com/arielsrv/go-archaius/source"
 var newFuncMap = make(map[string]NewRemoteSource)
 
 const (
-	// ApolloSource is for apollo source
+	// ApolloSource is for apollo source.
 	ApolloSource = "apollo"
-	// ConfigCenterSource is for config center source
+	// ConfigCenterSource is for config center source.
 	ConfigCenterSource = "config-center"
-	// KieSource is for ServiceComb-Kie source
+	// KieSource is for ServiceComb-Kie source.
 	KieSource = "kie"
 )
 
-// NewRemoteSource create a new remote source
+// NewRemoteSource create a new remote source.
 type NewRemoteSource func(info *RemoteInfo) (source.ConfigSource, error)
 
-// InstallRemoteSource allow user customize remote source
+// InstallRemoteSource allow user customize remote source.
 func InstallRemoteSource(source string, remoteSource NewRemoteSource) {
 	newFuncMap[source] = remoteSource
 }

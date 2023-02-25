@@ -2,18 +2,19 @@ package util
 
 import (
 	"fmt"
-	"github.com/sirupsen/logrus"
 	"path/filepath"
+
+	"github.com/sirupsen/logrus"
 
 	"gopkg.in/yaml.v2"
 )
 
 // FileHandler decide how to convert a file content into key values
-// archaius will manage file content as those key values
+// archaius will manage file content as those key values.
 type FileHandler func(filePath string, content []byte) (map[string]interface{}, error)
 
 // Convert2JavaProps is a FileHandler
-// it convert the yaml content into java props
+// it convert the yaml content into java props.
 func Convert2JavaProps(p string, content []byte) (map[string]interface{}, error) {
 	configMap := make(map[string]interface{})
 
@@ -60,9 +61,7 @@ func retrieveItems(prefix string, subItems yaml.MapSlice) map[string]interface{}
 		// sub item in other type
 		default:
 			result[prefix+k] = item.Value
-
 		}
-
 	}
 
 	return result
@@ -93,7 +92,7 @@ func retrieveItemInSlice(value []interface{}) []interface{} {
 	return value
 }
 
-// UseFileNameAsKeyContentAsValue is a FileHandler, it sets the yaml file name as key and the content as value
+// UseFileNameAsKeyContentAsValue is a FileHandler, it sets the yaml file name as key and the content as value.
 func UseFileNameAsKeyContentAsValue(p string, content []byte) (map[string]interface{}, error) {
 	_, filename := filepath.Split(p)
 	configMap := make(map[string]interface{})
@@ -101,7 +100,7 @@ func UseFileNameAsKeyContentAsValue(p string, content []byte) (map[string]interf
 	return configMap, nil
 }
 
-// Convert2configMap is legacy API
+// Convert2configMap is legacy API.
 func Convert2configMap(p string, content []byte) (map[string]interface{}, error) {
 	return UseFileNameAsKeyContentAsValue(p, content)
 }

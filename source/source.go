@@ -2,7 +2,7 @@ package source
 
 import "github.com/arielsrv/go-archaius/event"
 
-// ConfigSource get key values from a system, like file system, key value store, memory etc
+// ConfigSource get key values from a system, like file system, key value store, memory etc.
 type ConfigSource interface {
 	Set(key string, value interface{}) error
 	Delete(key string) error
@@ -17,7 +17,7 @@ type ConfigSource interface {
 	AddDimensionInfo(labels map[string]string) error
 }
 
-// EventHandler handles config change event
+// EventHandler handles config change event.
 type EventHandler interface {
 	OnEvent(event *event.Event)
 	OnModuleEvent(events []*event.Event)

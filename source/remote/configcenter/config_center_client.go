@@ -17,8 +17,9 @@
 package configcenter
 
 import (
-	"github.com/sirupsen/logrus"
 	"strings"
+
+	"github.com/sirupsen/logrus"
 
 	"github.com/arielsrv/go-archaius/pkg/configcenter"
 	"github.com/arielsrv/go-archaius/source/remote"
@@ -26,20 +27,20 @@ import (
 )
 
 const (
-	//HeaderContentType is a variable of type string
+	//HeaderContentType is a variable of type string.
 	HeaderContentType = "Content-Type"
-	//HeaderUserAgent is a variable of type string
+	//HeaderUserAgent is a variable of type string.
 	HeaderUserAgent = "User-Agent"
 )
 
-// ConfigCenter is Implementation
+// ConfigCenter is Implementation.
 type ConfigCenter struct {
 	c        *configcenter.Client
 	opts     remote.Options
 	wsDialer *websocket.Dialer
 }
 
-// NewConfigCenter is a function
+// NewConfigCenter is a function.
 func NewConfigCenter(options remote.Options) (*ConfigCenter, error) {
 	if options.ServerURI == "" {
 		return nil, remote.ErrInvalidEP
@@ -81,7 +82,7 @@ func NewConfigCenter(options remote.Options) (*ConfigCenter, error) {
 	return cc, nil
 }
 
-// PullConfigs is the implementation of ConfigCenter to pull all the configurations from Config-Server
+// PullConfigs is the implementation of ConfigCenter to pull all the configurations from Config-Server.
 func (c *ConfigCenter) PullConfigs(labels ...map[string]string) (map[string]interface{}, error) {
 	d := ""
 	var err error
@@ -96,12 +97,12 @@ func (c *ConfigCenter) PullConfigs(labels ...map[string]string) (map[string]inte
 	return configurations, nil
 }
 
-// Watch use ws
+// Watch use ws.
 func (c *ConfigCenter) Watch(f func(map[string]interface{}), errHandler func(err error), labels map[string]string) error {
 	return c.c.Watch(f, errHandler)
 }
 
-// Options return options
+// Options return options.
 func (c *ConfigCenter) Options() remote.Options {
 	return c.opts
 }

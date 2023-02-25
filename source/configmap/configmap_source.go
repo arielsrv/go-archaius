@@ -19,13 +19,13 @@ package configmapource
 import (
 	"errors"
 	"fmt"
-	"github.com/sirupsen/logrus"
-	"io/ioutil"
 	"math"
 	"os"
 	"path/filepath"
 	"reflect"
 	"sync"
+
+	"github.com/sirupsen/logrus"
 
 	"github.com/arielsrv/go-archaius/event"
 	"github.com/arielsrv/go-archaius/source"
@@ -38,26 +38,26 @@ import (
 )
 
 const (
-	//ConfigMapConfigSourceConst is a variable of type string
+	//ConfigMapConfigSourceConst is a variable of type string.
 	ConfigMapConfigSourceConst = "ConfigMapSource"
 	configMapSourcePriority    = 4
-	//DefaultConfigMapPriority as default priority
+	//DefaultConfigMapPriority as default priority.
 	DefaultConfigMapPriority = 0
 )
 
-// ConfigMapFileSourceTypes is a string
+// ConfigMapFileSourceTypes is a string.
 type ConfigMapFileSourceTypes string
 
 const (
-	//RegularFile as regular file
+	//RegularFile as regular file.
 	RegularFile ConfigMapFileSourceTypes = "RegularFile"
-	//Directory is directory
+	//Directory is directory.
 	Directory ConfigMapFileSourceTypes = "Directory"
-	//InvalidFileType type InvalidType
+	//InvalidFileType type InvalidType.
 	InvalidFileType ConfigMapFileSourceTypes = "InvalidType"
 )
 
-// ConfigInfo is s struct
+// ConfigInfo is s struct.
 type ConfigInfo struct {
 	FilePath string
 	Value    interface{}
@@ -87,13 +87,13 @@ type watch struct {
 
 var configMapConfigSource *configMapSource
 
-// ConfigMapSource is interface
+// ConfigMapSource is interface.
 type ConfigMapSource interface {
 	source.ConfigSource
 	AddFile(filePath string, priority uint32, handler util.FileHandler) error
 }
 
-// NewConfigMapSource creates a source which can handler recurse directory
+// NewConfigMapSource creates a source which can handler recurse directory.
 func NewConfigMapSource() ConfigMapSource {
 	if configMapConfigSource == nil {
 		configMapConfigSource = new(configMapSource)
@@ -106,7 +106,6 @@ func NewConfigMapSource() ConfigMapSource {
 }
 
 func (cmSource *configMapSource) AddFile(p string, priority uint32, handle util.FileHandler) error {
-
 	path, err := cmSource.getFilePath(p)
 	if err != nil {
 		return err
@@ -202,7 +201,7 @@ func getFileType(fs *os.File) ConfigMapFileSourceTypes {
 }
 
 func (cmSource *configMapSource) handleFile(file *os.File, priority uint32, handle util.FileHandler) error {
-	Content, err := ioutil.ReadFile(file.Name())
+	Content, err := os.ReadFile(file.Name())
 	if err != nil {
 		return err
 	}
@@ -236,7 +235,6 @@ func (cmSource *configMapSource) handlePriority(filePath string, priority uint32
 	newFilePriority := make([]file, 0)
 	var prioritySet bool
 	for _, f := range cmSource.files {
-
 		if f.filePath == filePath && f.priority == priority {
 			prioritySet = true
 			newFilePriority = append(newFilePriority, file{
@@ -303,7 +301,7 @@ func (cmSource *configMapSource) GetPriority() int {
 	return cmSource.priority
 }
 
-// SetPriority custom priority
+// SetPriority custom priority.
 func (cmSource *configMapSource) SetPriority(priority int) {
 	cmSource.priority = priority
 }
@@ -416,7 +414,7 @@ func (cmSource *configMapSource) updateFile(wth *watch, event fsnotify.Event) {
 		if handle == nil {
 			handle = util.Convert2JavaProps
 		}
-		content, err := ioutil.ReadFile(event.Name)
+		content, err := os.ReadFile(event.Name)
 		if err != nil {
 			logrus.Error("read file error " + err.Error())
 			return
@@ -447,7 +445,6 @@ func (cmSource *configMapSource) updateFile(wth *watch, event fsnotify.Event) {
 		}
 		wth.configMapSource.AddFile(event.Name, priority, fileHandler)
 	}
-
 }
 
 func (cmSource *configMapSource) compareUpdate(newconf map[string]interface{}, filePath string) []*event.Event {
@@ -509,13 +506,11 @@ func (cmSource *configMapSource) compareUpdate(newconf map[string]interface{}, f
 					fileConfs[key] = confInfo
 					confInfo.Value = newconf[key]
 					//logrus.Infof("Two files have same priority. use new value: %s ", confInfo.FilePath)
-
 				} else if filePathPriority < priority { // lower the vale higher is the priority
 					confInfo.Value = newConfValue
 					fileConfs[key] = confInfo
 					events = append(events, &event.Event{EventSource: ConfigMapConfigSourceConst,
 						Key: key, EventType: event.Update, Value: newConfValue})
-
 				} else {
 					fileConfs[key] = confInfo
 				}
@@ -556,7 +551,6 @@ func (cmSource *configMapSource) addOrCreateConf(fileConfs map[string]*ConfigInf
 }
 
 func (cmSource *configMapSource) Cleanup() error {
-
 	cmSource.fileLock.Lock()
 	defer cmSource.fileLock.Unlock()
 
@@ -582,12 +576,12 @@ func (cmSource *configMapSource) AddDimensionInfo(labels map[string]string) erro
 	return nil
 }
 
-// Set no use
+// Set no use.
 func (cmSource *configMapSource) Set(key string, value interface{}) error {
 	return nil
 }
 
-// Set no use
+// Set no use.
 func (cmSource *configMapSource) Delete(key string) error {
 	return nil
 }

@@ -21,8 +21,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/sirupsen/logrus"
-	"io/ioutil"
+	"io"
 	"math/rand"
 	"net/http"
 	"net/url"
@@ -30,6 +29,8 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/sirupsen/logrus"
 
 	"github.com/arielsrv/go-archaius/pkg/serializers"
 	"github.com/go-chassis/foundation/httpclient"
@@ -39,13 +40,13 @@ import (
 const (
 	defaultTimeout = 10 * time.Second
 	numberSign     = "%23"
-	//StatusUP is a variable of type string
+	//StatusUP is a variable of type string.
 	StatusUP = "UP"
-	//HeaderContentType is a variable of type string
+	//HeaderContentType is a variable of type string.
 	HeaderContentType = "Content-Type"
-	//HeaderUserAgent is a variable of type string
+	//HeaderUserAgent is a variable of type string.
 	HeaderUserAgent = "User-Agent"
-	//HeaderEnvironment specifies the environment of a service
+	//HeaderEnvironment specifies the environment of a service.
 	HeaderEnvironment        = "X-Environment"
 	members                  = "/configuration/members"
 	dimensionsInfo           = "dimensionsInfo"
@@ -56,25 +57,25 @@ const (
 	packageInitError         = "package not initialize successfully"
 	emptyConfigServerMembers = "empty config server member"
 	emptyConfigServerConfig  = "empty config server passed"
-	// Name of the Plugin
+	// Name of the Plugin.
 	Name = "config_center"
 )
 
 var (
-	//HeaderTenantName is a variable of type string
+	//HeaderTenantName is a variable of type string.
 	HeaderTenantName = "X-Tenant-Name"
-	//ConfigMembersPath is a variable of type string
+	//ConfigMembersPath is a variable of type string.
 	ConfigMembersPath = ""
-	//ConfigPath is a variable of type string
+	//ConfigPath is a variable of type string.
 	ConfigPath = ""
-	//ConfigRefreshPath is a variable of type string
+	//ConfigRefreshPath is a variable of type string.
 	ConfigRefreshPath = ""
 	autoDiscoverable  = false
 	apiVersionConfig  = ""
 	environmentConfig = ""
 )
 
-// Client is a struct
+// Client is a struct.
 type Client struct {
 	opts Options
 	sync.RWMutex
@@ -83,7 +84,7 @@ type Client struct {
 	wsConnection *websocket.Conn
 }
 
-// New create cc client
+// New create cc client.
 func New(opts Options) (*Client, error) {
 	var apiVersion string
 	apiVersionConfig = opts.APIVersion
@@ -157,9 +158,8 @@ func (c *Client) call(method string, api string, headers http.Header, body []byt
 	if err != nil {
 		logrus.Error(errMsgPrefix + err.Error())
 		return err
-
 	}
-	body, err = ioutil.ReadAll(resp.Body)
+	body, err = io.ReadAll(resp.Body)
 	if err != nil {
 		logrus.Error(errMsgPrefix + err.Error())
 		return err
@@ -183,7 +183,7 @@ func (c *Client) call(method string, api string, headers http.Header, body []byt
 	return nil
 }
 
-// HTTPDo Use http-client package for rest communication
+// HTTPDo Use http-client package for rest communication.
 func (c *Client) HTTPDo(method string, rawURL string, headers http.Header, body []byte) (resp *http.Response, err error) {
 	if len(headers) == 0 {
 		headers = make(http.Header)
@@ -194,7 +194,7 @@ func (c *Client) HTTPDo(method string, rawURL string, headers http.Header, body 
 	return c.c.Do(context.Background(), method, rawURL, headers, body)
 }
 
-// Flatten pulls all the configuration from config center and merge kv in different dimension
+// Flatten pulls all the configuration from config center and merge kv in different dimension.
 func (c *Client) Flatten(dimensionInfo string) (map[string]interface{}, error) {
 	config := make(map[string]interface{})
 	configAPIResp, err := c.PullGroupByDimension(dimensionInfo)
@@ -205,13 +205,12 @@ func (c *Client) Flatten(dimensionInfo string) (map[string]interface{}, error) {
 	for _, v := range configAPIResp {
 		for key, value := range v {
 			config[key] = value
-
 		}
 	}
 	return config, nil
 }
 
-// PullGroupByDimension pulls all the configuration from Config-Server group by dimesion Info
+// PullGroupByDimension pulls all the configuration from Config-Server group by dimesion Info.
 func (c *Client) PullGroupByDimension(dimensionInfo string) (map[string]map[string]interface{}, error) {
 	configAPIRes := make(map[string]map[string]interface{})
 	parsedDimensionInfo := strings.Replace(dimensionInfo, "#", numberSign, -1)
@@ -225,7 +224,7 @@ func (c *Client) PullGroupByDimension(dimensionInfo string) (map[string]map[stri
 	return configAPIRes, nil
 }
 
-// Do is common http remote call
+// Do is common http remote call.
 func (c *Client) Do(method string, data interface{}) (map[string]interface{}, error) {
 	configAPIS := make(map[string]interface{})
 	body, err := serializers.Encode(serializers.JSONEncoder, data)
@@ -240,17 +239,17 @@ func (c *Client) Do(method string, data interface{}) (map[string]interface{}, er
 	return configAPIS, nil
 }
 
-// AddConfig post new config
+// AddConfig post new config.
 func (c *Client) AddConfig(data *CreateConfigAPI) (map[string]interface{}, error) {
 	return c.Do("POST", data)
 }
 
-// DeleteConfig delete configs
+// DeleteConfig delete configs.
 func (c *Client) DeleteConfig(data *DeleteConfigAPI) (map[string]interface{}, error) {
 	return c.Do("DELETE", data)
 }
 
-// Watch use websocket
+// Watch use websocket.
 func (c *Client) Watch(f func(map[string]interface{}), errHandler func(err error)) error {
 	parsedDimensionInfo := strings.Replace(c.opts.DefaultDimension, "#", numberSign, -1)
 	refreshConfigPath := ConfigRefreshPath + `?` + dimensionsInfo + `=` + parsedDimensionInfo
@@ -323,7 +322,7 @@ func isStatusSuccess(i int) bool {
 	return i >= http.StatusOK && i < http.StatusBadRequest
 }
 
-// Shuffle is a method to log error
+// Shuffle is a method to log error.
 func (c *Client) Shuffle() error {
 	if c.opts.ConfigServerAddresses == nil || len(c.opts.ConfigServerAddresses) == 0 {
 		err := errors.New(emptyConfigServerConfig)
@@ -347,9 +346,8 @@ func (c *Client) Shuffle() error {
 	return nil
 }
 
-// GetConfigServer is a method used for getting server configuration
+// GetConfigServer is a method used for getting server configuration.
 func (c *Client) GetConfigServer() ([]string, error) {
-
 	if len(c.opts.ConfigServerAddresses) == 0 {
 		err := errors.New(emptyConfigServerMembers)
 		logrus.Error(emptyConfigServerMembers)
@@ -360,7 +358,6 @@ func (c *Client) GetConfigServer() ([]string, error) {
 	for key := range tmpConfigAddrs {
 		if !strings.Contains(c.opts.ConfigServerAddresses[key], "https") && c.opts.EnableSSL {
 			c.opts.ConfigServerAddresses[key] = `https://` + c.opts.ConfigServerAddresses[key]
-
 		} else if !strings.Contains(c.opts.ConfigServerAddresses[key], "http") {
 			c.opts.ConfigServerAddresses[key] = `http://` + c.opts.ConfigServerAddresses[key]
 		}
@@ -378,7 +375,7 @@ func (c *Client) GetConfigServer() ([]string, error) {
 	return c.opts.ConfigServerAddresses, nil
 }
 
-// GetConfigs get KV from a event
+// GetConfigs get KV from a event.
 func GetConfigs(actionData []byte) (map[string]interface{}, error) {
 	configCenterEvent := new(Event)
 	err := serializers.Decode(serializers.JSONEncoder, actionData, &configCenterEvent)

@@ -55,7 +55,7 @@ func (t *TestDynamicConfigHandler) OnEvent(e *event.Event) {
 	t.EventValue = e.Value
 }
 
-// GetWorkDir is a function used to get the working directory
+// GetWorkDir is a function used to get the working directory.
 func GetWorkDir() (string, error) {
 	wd, err := filepath.Abs(filepath.Dir(os.Args[0]))
 	if err != nil {
@@ -65,7 +65,6 @@ func GetWorkDir() (string, error) {
 }
 
 func TestDynamicConfigurations(t *testing.T) {
-
 	root, _ := GetWorkDir()
 	os.Setenv("CHASSIS_HOME", root)
 
@@ -217,9 +216,8 @@ func TestDynamicConfigurations(t *testing.T) {
 	}
 }
 
-// delete old directory and create new directory
+// delete old directory and create new directory.
 func TestConfigMapSource2(t *testing.T) {
-
 	root, err := filepath.Abs(filepath.Dir(os.Args[0]))
 	if err != nil {
 		t.Error("get file error")
@@ -339,5 +337,4 @@ func TestConfigMapSource2(t *testing.T) {
 	if configsourcecleanup != nil {
 		t.Error("configmapsource cleanup is Failed")
 	}
-
 }

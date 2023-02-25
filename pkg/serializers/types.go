@@ -24,13 +24,13 @@ import (
 )
 
 const (
-	//JSONEncoder is a variable of type string
+	//JSONEncoder is a variable of type string.
 	JSONEncoder = `application/json`
 )
 
 var availableSerializers map[string]Serializer
 
-// Serializer is a interface which declares encode and decode methods
+// Serializer is a interface which declares encode and decode methods.
 type Serializer interface {
 	Encode(obj interface{}) ([]byte, error)
 	Decode(data []byte, obj interface{}) error
@@ -43,7 +43,7 @@ func init() {
 	availableSerializers[JSONEncoder] = json.Serializer{}
 }
 
-// Encode is a convenience wrapper for encoding to a []byte from an Encoder
+// Encode is a convenience wrapper for encoding to a []byte from an Encoder.
 func Encode(serializersType string, obj interface{}) ([]byte, error) {
 	serializer, ok := availableSerializers[serializersType]
 	if !ok {

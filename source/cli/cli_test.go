@@ -36,7 +36,6 @@ func (t *TestDynamicConfigHandler) OnModuleEvent(events []*event.Event) {
 }
 
 func TestCommandLineConfigurationSource(t *testing.T) {
-
 	os.Args = append(os.Args, "--testcmdkey1=cmdkey1")
 	os.Args = append(os.Args, "--testcmdkey2=cmdkey2")
 	os.Args = append(os.Args, "-A=cmdkey3")

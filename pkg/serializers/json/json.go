@@ -23,29 +23,28 @@ import (
 	"errors"
 )
 
-// errors
+// errors.
 var (
 	ErrInvalidRequest = errors.New("Invalid request ")
 )
 
-// Serializer is a empty struct
+// Serializer is a empty struct.
 type Serializer struct{}
 
-// Decode - Unmarshal unmarshaling data
+// Decode - Unmarshal unmarshaling data.
 func (js Serializer) Decode(data []byte, v interface{}) error {
 	var err error
 	defer func() {
 		if r := recover(); r != nil {
 			err = ErrInvalidRequest
 		}
-
 	}()
 
 	err = jsonwrapper.Unmarshal(data, v)
 	return err
 }
 
-// Encode - Marshal marshaling data
+// Encode - Marshal marshaling data.
 func (js Serializer) Encode(v interface{}) ([]byte, error) {
 	var (
 		data []byte
@@ -56,7 +55,6 @@ func (js Serializer) Encode(v interface{}) ([]byte, error) {
 		if r := recover(); r != nil {
 			err = ErrInvalidRequest
 		}
-
 	}()
 
 	data, err = jsonwrapper.Marshal(v)

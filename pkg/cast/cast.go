@@ -19,7 +19,7 @@ import (
 	ca "github.com/spf13/cast"
 )
 
-// const
+// const.
 const (
 	fmtToFloat64Failed = "unable to cast %#v of type %T to float64"
 )
@@ -29,7 +29,7 @@ type configValue struct {
 	err   error
 }
 
-// NewValue creates an object for an interface X
+// NewValue creates an object for an interface X.
 func NewValue(val interface{}, err error) Value {
 	confVal := new(configValue)
 	confVal.value = val
@@ -37,7 +37,7 @@ func NewValue(val interface{}, err error) Value {
 	return confVal
 }
 
-// Value is an interface to typecast an Object
+// Value is an interface to typecast an Object.
 type Value interface {
 	ToInt64() (int64, error)
 	ToInt32() (int32, error)

@@ -44,7 +44,6 @@ func (t *TestDynamicConfigHandler) OnModuleEvent(events []*event.Event) {
 }
 
 func TestMemoryConfigurationSource(t *testing.T) {
-
 	memorysource := mem.NewMemoryConfigurationSource()
 
 	t.Log("Test memorysource")

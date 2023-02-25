@@ -1,9 +1,10 @@
 package event_test
 
 import (
-	"github.com/stretchr/testify/assert"
 	"sync"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 
 	"github.com/arielsrv/go-archaius/event"
 )
@@ -81,7 +82,6 @@ func TestDispatchEvent(t *testing.T) {
 	}
 
 	dispatcher.UnRegisterListener(eventListener3, "Key1")
-
 }
 
 type MListener struct {

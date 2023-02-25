@@ -3,11 +3,12 @@ package archaius_test
 import (
 	"bytes"
 	"fmt"
-	"github.com/sirupsen/logrus"
 	"io"
 	"os"
 	"path/filepath"
 	"testing"
+
+	"github.com/sirupsen/logrus"
 
 	"github.com/arielsrv/go-archaius"
 	"github.com/arielsrv/go-archaius/event"
@@ -63,7 +64,6 @@ exist: true
 		archaius.Delete("age")
 		assert.Equal(t, "15", archaius.Get("age"))
 	})
-
 }
 func TestAddFile(t *testing.T) {
 
@@ -112,7 +112,6 @@ func TestConfig_RegisterListener(t *testing.T) {
 	err := archaius.RegisterListener(eventHandler, "a*")
 	assert.NoError(t, err)
 	defer archaius.UnRegisterListener(eventHandler, "a*")
-
 }
 
 func TestUnmarshalConfig(t *testing.T) {

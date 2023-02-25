@@ -6,7 +6,7 @@ import (
 	"sync"
 )
 
-// Concurrent is a framework that allows for concurrent N independent pieces of work
+// Concurrent is a framework that allows for concurrent N independent pieces of work.
 func Concurrent(workers, pieces int, doWorkPiece func(piece int, errCh chan error)) error {
 	if pieces < workers {
 		workers = pieces

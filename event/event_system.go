@@ -23,17 +23,18 @@ package event
 
 import (
 	"errors"
-	"github.com/sirupsen/logrus"
 	"regexp"
 	"strings"
+
+	"github.com/sirupsen/logrus"
 )
 
-// errors
+// errors.
 var (
 	ErrNilListener = errors.New("nil listener")
 )
 
-// Event Constant
+// Event Constant.
 const (
 	Update        = "UPDATE"
 	Delete        = "DELETE"
@@ -116,7 +117,7 @@ func (pre *PrefixIndex) FindPrefix(key string) string {
 	return cur.Prefix
 }
 
-// Event generated when any config changes
+// Event generated when any config changes.
 type Event struct {
 	EventSource string
 	EventType   string
@@ -125,24 +126,24 @@ type Event struct {
 	HasUpdated  bool
 }
 
-// Listener All Listener should implement this Interface
+// Listener All Listener should implement this Interface.
 type Listener interface {
 	Event(event *Event)
 }
 
-// ModuleListener All moduleListener should implement this Interface
+// ModuleListener All moduleListener should implement this Interface.
 type ModuleListener interface {
 	Event(event []*Event)
 }
 
-// Dispatcher is the observer
+// Dispatcher is the observer.
 type Dispatcher struct {
 	listeners         map[string][]Listener
 	moduleListeners   map[string][]ModuleListener
 	modulePrefixIndex PrefixIndex
 }
 
-// NewDispatcher is a new Dispatcher for listeners
+// NewDispatcher is a new Dispatcher for listeners.
 func NewDispatcher() *Dispatcher {
 	dis := new(Dispatcher)
 	dis.listeners = make(map[string][]Listener)
@@ -150,7 +151,7 @@ func NewDispatcher() *Dispatcher {
 	return dis
 }
 
-// RegisterListener registers listener for particular configuration
+// RegisterListener registers listener for particular configuration.
 func (dis *Dispatcher) RegisterListener(listenerObj Listener, keys ...string) error {
 	if listenerObj == nil {
 		err := ErrNilListener
@@ -180,7 +181,7 @@ func (dis *Dispatcher) RegisterListener(listenerObj Listener, keys ...string) er
 	return nil
 }
 
-// UnRegisterListener un-register listener for a particular configuration
+// UnRegisterListener un-register listener for a particular configuration.
 func (dis *Dispatcher) UnRegisterListener(listenerObj Listener, keys ...string) error {
 	if listenerObj == nil {
 		return ErrNilListener
@@ -207,7 +208,7 @@ func (dis *Dispatcher) UnRegisterListener(listenerObj Listener, keys ...string) 
 	return nil
 }
 
-// DispatchEvent sends the action trigger for a particular event on a configuration
+// DispatchEvent sends the action trigger for a particular event on a configuration.
 func (dis *Dispatcher) DispatchEvent(event *Event) error {
 	if event == nil {
 		return errors.New("empty event provided")
@@ -230,7 +231,7 @@ func (dis *Dispatcher) DispatchEvent(event *Event) error {
 	return nil
 }
 
-// RegisterModuleListener registers moduleListener for particular configuration
+// RegisterModuleListener registers moduleListener for particular configuration.
 func (dis *Dispatcher) RegisterModuleListener(listenerObj ModuleListener, modulePrefixes ...string) error {
 	if listenerObj == nil {
 		err := ErrNilListener
@@ -261,7 +262,7 @@ func (dis *Dispatcher) RegisterModuleListener(listenerObj ModuleListener, module
 	return nil
 }
 
-// UnRegisterModuleListener un-register moduleListener for a particular configuration
+// UnRegisterModuleListener un-register moduleListener for a particular configuration.
 func (dis *Dispatcher) UnRegisterModuleListener(listenerObj ModuleListener, modulePrefixes ...string) error {
 	if listenerObj == nil {
 		return ErrNilListener
@@ -291,7 +292,7 @@ func (dis *Dispatcher) UnRegisterModuleListener(listenerObj ModuleListener, modu
 	return nil
 }
 
-// DispatchModuleEvent finds the registered function for callback according to the prefix of key in events
+// DispatchModuleEvent finds the registered function for callback according to the prefix of key in events.
 func (dis *Dispatcher) DispatchModuleEvent(events []*Event) error {
 	if events == nil || len(events) == 0 {
 		return errors.New("empty events provided")
@@ -313,7 +314,7 @@ func (dis *Dispatcher) DispatchModuleEvent(events []*Event) error {
 	return nil
 }
 
-// Event key with the same subscription prefix is placed in the same slice
+// Event key with the same subscription prefix is placed in the same slice.
 func (dis *Dispatcher) parseEvents(events []*Event) map[string][]*Event {
 	var eventList = make(map[string][]*Event)
 	for _, event := range events {
@@ -337,7 +338,7 @@ func (dis *Dispatcher) parseEvents(events []*Event) map[string][]*Event {
 }
 
 // Find first prefix from event.key
-// Ignore the case where namespace and module key(prefix) have the same name
+// Ignore the case where namespace and module key(prefix) have the same name.
 func (dis *Dispatcher) findFirstRegisterPrefix(eventKey string) string {
 	keyArr := strings.Split(eventKey, ".")
 	for _, key := range keyArr {
