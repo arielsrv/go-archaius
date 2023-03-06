@@ -31,10 +31,11 @@ var (
 func init() {
 	// Log as JSON instead of the default ASCII formatter.
 	logrus.SetFormatter(&nested.Formatter{
-		FieldsOrder:     []string{"component", "category"},
-		TimestampFormat: "2006-01-02 15:04:05",
-		HideKeys:        true,
-		TrimMessages:    true,
+		FieldsOrder:      []string{"component", "category"},
+		TimestampFormat:  "2006-01-02 15:04:05",
+		HideKeys:         true,
+		TrimMessages:     true,
+		NoUppercaseLevel: true,
 	})
 }
 func initFileSource(o *Options) (filesource.FileSource, error) {
