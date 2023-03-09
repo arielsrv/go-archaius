@@ -121,7 +121,7 @@ func (ks *Source) refreshConfigurationsPeriodically() {
 }
 
 func (ks *Source) refreshConfigurations() error {
-	config, err := ks.k.PullConfigs(ks.dimensions...)
+	config, err := ks.k.PullConfigs()
 	if err != nil {
 		logrus.Warn(fmt.Sprintf("failed to pull configurations from kie server %s", err)) //Warn
 		return err
@@ -197,20 +197,17 @@ func (ks *Source) Watch(callback source.EventHandler) error {
 	}
 	//Start watch and receive change events.
 	logrus.Info("start watching configurations")
-	err := ks.k.Watch(
-		func(kv map[string]interface{}) {
-			logrus.Debug("watch configs", logrus.WithFields(logrus.Fields{
-				"config": kv,
-			}))
-			err := ks.updateConfigAndFireEvent(kv)
-			if err != nil {
-				logrus.Error("error in updating configurations:" + err.Error())
-			}
-		},
-		func(err error) {
-			logrus.Error(err.Error())
-		}, nil,
-	)
+	err := ks.k.Watch(func(kv map[string]interface{}) {
+		logrus.Debug("watch configs", logrus.WithFields(logrus.Fields{
+			"config": kv,
+		}))
+		err := ks.updateConfigAndFireEvent(kv)
+		if err != nil {
+			logrus.Error("error in updating configurations:" + err.Error())
+		}
+	}, func(err error) {
+		logrus.Error(err.Error())
+	})
 	logrus.Info("stop watching configurations")
 	if err != nil {
 		logrus.Error("watch kie source failed: " + err.Error())
@@ -229,12 +226,12 @@ func (ks *Source) Cleanup() error {
 }
 
 // Set no use.
-func (ks *Source) Set(key string, value interface{}) error {
+func (ks *Source) Set(_ string, _ interface{}) error {
 	return nil
 }
 
 // Delete no use.
-func (ks *Source) Delete(key string) error {
+func (ks *Source) Delete(_ string) error {
 	return nil
 }
 func init() {

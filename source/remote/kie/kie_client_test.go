@@ -1,6 +1,7 @@
-package kie
+package kie_test
 
 import (
+	"github.com/arielsrv/go-archaius/source/remote/kie"
 	"strconv"
 	"testing"
 
@@ -10,7 +11,7 @@ import (
 )
 
 func TestNewKie(t *testing.T) {
-	k, err := NewKie(remote.Options{
+	k, err := kie.NewKie(remote.Options{
 		ServerURI: "http://",
 		Labels:    map[string]string{remote.LabelApp: "default"}})
 	assert.NoError(t, err)
@@ -18,7 +19,7 @@ func TestNewKie(t *testing.T) {
 }
 
 func TestMergeConfig(t *testing.T) {
-	k, err := NewKie(remote.Options{
+	k, err := kie.NewKie(remote.Options{
 		ServerURI: "http://",
 		Labels: map[string]string{
 			remote.LabelApp:         "app",
@@ -27,8 +28,8 @@ func TestMergeConfig(t *testing.T) {
 			remote.LabelVersion:     "1.0.0",
 		}})
 	assert.NoError(t, err)
-	for i, dimension := range dimensionPrecedence {
-		k.setDimensionConfigs(&client.KVResponse{
+	for i, dimension := range kie.DimensionPrecedence {
+		k.SetDimensionConfigs(&client.KVResponse{
 			Data: []*client.KVDoc{
 				{
 					Key:    "foo",
@@ -38,5 +39,5 @@ func TestMergeConfig(t *testing.T) {
 			},
 		}, dimension)
 	}
-	assert.Equal(t, strconv.Itoa(len(dimensionPrecedence)), k.mergeConfig()["foo"].(string))
+	assert.Equal(t, strconv.Itoa(len(kie.DimensionPrecedence)), k.MergeConfig()["foo"].(string))
 }

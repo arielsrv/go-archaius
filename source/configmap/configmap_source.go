@@ -41,8 +41,6 @@ const (
 	//ConfigMapConfigSourceConst is a variable of type string.
 	ConfigMapConfigSourceConst = "ConfigMapSource"
 	configMapSourcePriority    = 4
-	//DefaultConfigMapPriority as default priority.
-	DefaultConfigMapPriority = 0
 )
 
 // ConfigMapFileSourceTypes is a string.
@@ -572,16 +570,16 @@ func (cmSource *configMapSource) Cleanup() error {
 	return nil
 }
 
-func (cmSource *configMapSource) AddDimensionInfo(labels map[string]string) error {
+func (cmSource *configMapSource) AddDimensionInfo(_ map[string]string) error {
 	return nil
 }
 
 // Set no use.
-func (cmSource *configMapSource) Set(key string, value interface{}) error {
+func (cmSource *configMapSource) Set(_ string, _ interface{}) error {
 	return nil
 }
 
 // Set no use.
-func (cmSource *configMapSource) Delete(key string) error {
+func (cmSource *configMapSource) Delete(_ string) error {
 	return nil
 }

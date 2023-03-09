@@ -115,21 +115,21 @@ func (cli *Source) Cleanup() error {
 }
 
 // Watch dynamically handles a configuration.
-func (*Source) Watch(callback source.EventHandler) error {
+func (*Source) Watch(_ source.EventHandler) error {
 	return nil
 }
 
 // AddDimensionInfo  is none function.
-func (cli *Source) AddDimensionInfo(labels map[string]string) error {
+func (cli *Source) AddDimensionInfo(_ map[string]string) error {
 	return nil
 }
 
 // Set no use.
-func (cli *Source) Set(key string, value interface{}) error {
+func (cli *Source) Set(_ string, _ interface{}) error {
 	return nil
 }
 
 // Delete no use.
-func (cli *Source) Delete(key string) error {
+func (cli *Source) Delete(_ string) error {
 	return nil
 }

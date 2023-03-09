@@ -66,11 +66,6 @@ func WithOptionalFiles(f []string) Option {
 
 // WithDefaultFileHandler let user custom handler
 // you can decide how to convert file into kv pairs.
-func WithDefaultFileHandler(handler util.FileHandler) Option {
-	return func(options *Options) {
-		options.FileHandler = handler
-	}
-}
 
 // WithRemoteSource accept the information for initiating a remote source.
 func WithRemoteSource(provider string, ri *RemoteInfo) Option {
@@ -82,11 +77,6 @@ func WithRemoteSource(provider string, ri *RemoteInfo) Option {
 
 // WithCommandLineSource enable cmd line source
 // archaius will read command line params as key value.
-func WithCommandLineSource() Option {
-	return func(options *Options) {
-		options.UseCLISource = true
-	}
-}
 
 // WithENVSource enable env source
 // archaius will read ENV as key value.

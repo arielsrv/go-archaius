@@ -120,7 +120,7 @@ func (rs *Source) refreshConfigurations() error {
 		events []*event.Event
 	)
 
-	config, err = rs.c.PullConfigs(rs.dimensions...)
+	config, err = rs.c.PullConfigs()
 	if err != nil {
 		logrus.Warn(fmt.Sprintf("failed to pull configurations from config center server %s", err)) //Warn
 		return err
@@ -189,27 +189,24 @@ func (rs *Source) Watch(callback source.EventHandler) error {
 		// Pull All the configuration for the first time.
 		rs.refreshConfigurations()
 		//Start watch and receive change events.
-		err := rs.c.Watch(
-			func(kv map[string]interface{}) {
-				rs.RLock()
-				defer rs.RUnlock()
-				events, err := event.PopulateEvents(ConfigCenterSourceName, rs.currentConfig, kv)
-				if err != nil {
-					logrus.Error("error in generating event:" + err.Error())
-					return
-				}
-
-				logrus.Debug(fmt.Sprintf("event on receive %v", events))
-				for _, e := range events {
-					callback.OnEvent(e)
-				}
-
+		err := rs.c.Watch(func(kv map[string]interface{}) {
+			rs.RLock()
+			defer rs.RUnlock()
+			events, err := event.PopulateEvents(ConfigCenterSourceName, rs.currentConfig, kv)
+			if err != nil {
+				logrus.Error("error in generating event:" + err.Error())
 				return
-			},
-			func(err error) {
-				logrus.Error(err.Error())
-			}, nil,
-		)
+			}
+
+			logrus.Debug(fmt.Sprintf("event on receive %v", events))
+			for _, e := range events {
+				callback.OnEvent(e)
+			}
+
+			return
+		}, func(err error) {
+			logrus.Error(err.Error())
+		})
 		if err != nil {
 			return err
 		}
@@ -229,12 +226,12 @@ func (rs *Source) Cleanup() error {
 }
 
 // Set no use.
-func (rs *Source) Set(key string, value interface{}) error {
+func (rs *Source) Set(_ string, _ interface{}) error {
 	return nil
 }
 
 // Delete no use.
-func (rs *Source) Delete(key string) error {
+func (rs *Source) Delete(_ string) error {
 	return nil
 }
 func init() {

@@ -23,21 +23,12 @@ import (
 
 	"github.com/arielsrv/go-archaius/pkg/configcenter"
 	"github.com/arielsrv/go-archaius/source/remote"
-	"github.com/gorilla/websocket"
-)
-
-const (
-	//HeaderContentType is a variable of type string.
-	HeaderContentType = "Content-Type"
-	//HeaderUserAgent is a variable of type string.
-	HeaderUserAgent = "User-Agent"
 )
 
 // ConfigCenter is Implementation.
 type ConfigCenter struct {
-	c        *configcenter.Client
-	opts     remote.Options
-	wsDialer *websocket.Dialer
+	c    *configcenter.Client
+	opts remote.Options
 }
 
 // NewConfigCenter is a function.
@@ -83,7 +74,7 @@ func NewConfigCenter(options remote.Options) (*ConfigCenter, error) {
 }
 
 // PullConfigs is the implementation of ConfigCenter to pull all the configurations from Config-Server.
-func (c *ConfigCenter) PullConfigs(labels ...map[string]string) (map[string]interface{}, error) {
+func (c *ConfigCenter) PullConfigs() (map[string]interface{}, error) {
 	d := ""
 	var err error
 	d, err = GenerateDimension(c.opts.Labels[remote.LabelService], c.opts.Labels[remote.LabelVersion], c.opts.Labels[remote.LabelApp])
@@ -98,7 +89,7 @@ func (c *ConfigCenter) PullConfigs(labels ...map[string]string) (map[string]inte
 }
 
 // Watch use ws.
-func (c *ConfigCenter) Watch(f func(map[string]interface{}), errHandler func(err error), labels map[string]string) error {
+func (c *ConfigCenter) Watch(f func(map[string]interface{}), errHandler func(err error)) error {
 	return c.c.Watch(f, errHandler)
 }
 

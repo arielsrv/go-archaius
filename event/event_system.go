@@ -34,12 +34,10 @@ var (
 	ErrNilListener = errors.New("nil listener")
 )
 
-// Event Constant.
 const (
-	Update        = "UPDATE"
-	Delete        = "DELETE"
-	Create        = "CREATE"
-	InvalidAction = "INVALID-ACTION"
+	Update = "UPDATE"
+	Delete = "DELETE"
+	Create = "CREATE"
 )
 
 type PrefixIndex struct {

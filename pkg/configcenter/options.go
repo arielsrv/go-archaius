@@ -45,7 +45,7 @@ func GetDefaultHeaders(tenantName string) http.Header {
 		HeaderUserAgent:   []string{"cse-configcenter-client/1.0.0"},
 		HeaderTenantName:  []string{tenantName},
 	}
-	if environmentConfig != "" {
+	if false {
 		headers.Set(HeaderEnvironment, environmentConfig)
 	}
 

@@ -568,16 +568,16 @@ func (fSource *Source) Cleanup() error {
 }
 
 // AddDimensionInfo  is none function.
-func (fSource *Source) AddDimensionInfo(labels map[string]string) error {
+func (fSource *Source) AddDimensionInfo(_ map[string]string) error {
 	return nil
 }
 
 // Set no use.
-func (fSource *Source) Set(key string, value interface{}) error {
+func (fSource *Source) Set(_ string, _ interface{}) error {
 	return nil
 }
 
 // Delete no use.
-func (fSource *Source) Delete(key string) error {
+func (fSource *Source) Delete(_ string) error {
 	return nil
 }

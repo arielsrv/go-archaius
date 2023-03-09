@@ -17,5 +17,4 @@ func main() {
 	}
 	log.Println(archaius.Get("cred.db.user"))
 	log.Println(archaius.Get("cred.db.pwd"))
-
 }

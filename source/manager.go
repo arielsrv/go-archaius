@@ -44,8 +44,6 @@ var (
 
 // const.
 const (
-	//DefaultPriority gives the default priority.
-	DefaultPriority      = -1
 	fmtInvalidKeyWithErr = "invalid key format for %s key. key registration ignored: %s"
 	fmtInvalidKey        = "invalid key format for %s key"
 	fmtLoadConfigFailed  = "fail to load configuration of %s source: %s"

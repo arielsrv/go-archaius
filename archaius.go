@@ -125,22 +125,6 @@ func Init(opts ...Option) error {
 
 // CustomInit accept a list of config source, add it into archaius runtime.
 // it almost like Init(), but you can fully control config sources you inject to archaius.
-func CustomInit(sources ...source.ConfigSource) error {
-	if running {
-		logrus.Warn("can not init archaius again, call Clean first")
-		return nil
-	}
-	var err error
-	manager = source.NewManager()
-	for _, s := range sources {
-		err = manager.AddSource(s)
-		if err != nil {
-			return err
-		}
-	}
-	running = true
-	return err
-}
 
 // EnableRemoteSource create a remote source singleton
 // A config center source pull remote config server key values into local memory
@@ -212,13 +196,6 @@ func GetBool(key string, defaultValue bool) bool {
 }
 
 // GetFloat64 gives the key value in the form of float64.
-func GetFloat64(key string, defaultValue float64) float64 {
-	result, err := GetValue(key).ToFloat64()
-	if err != nil {
-		return defaultValue
-	}
-	return result
-}
 
 // GetInt gives the key value in the form of GetInt.
 func GetInt(key string, defaultValue int) int {
@@ -264,10 +241,6 @@ func GetConfigsWithSourceNames() map[string]interface{} {
 }
 
 // AddDimensionInfo adds a NewDimensionInfo of which configurations needs to be taken.
-func AddDimensionInfo(labels map[string]string) (map[string]string, error) {
-	config, err := manager.AddDimensionInfo(labels)
-	return config, err
-}
 
 // RegisterListener to Register all listener for different key changes, each key could be a regular expression.
 func RegisterListener(listenerObj event.Listener, key ...string) error {
@@ -285,9 +258,6 @@ func RegisterModuleListener(listenerObj event.ModuleListener, prefix ...string) 
 }
 
 // UnRegisterModuleListener is to remove the moduleListener.
-func UnRegisterModuleListener(listenerObj event.ModuleListener, prefix ...string) error {
-	return manager.UnRegisterModuleListener(listenerObj, prefix...)
-}
 
 // AddFile is for to add the configuration files at runtime.
 func AddFile(file string, opts ...FileOption) error {
@@ -313,9 +283,6 @@ func Delete(key string) error {
 }
 
 // AddSource add source implementation.
-func AddSource(source source.ConfigSource) error {
-	return manager.AddSource(source)
-}
 
 // Clean will call config manager CleanUp Method,
 // it deletes all sources which means all of key value is deleted.

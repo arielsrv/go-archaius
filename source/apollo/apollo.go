@@ -133,17 +133,17 @@ func (as *Source) GetSourceName() string {
 }
 
 // AddDimensionInfo no use.
-func (as *Source) AddDimensionInfo(labels map[string]string) error {
+func (as *Source) AddDimensionInfo(_ map[string]string) error {
 	return nil
 }
 
 // Set no use.
-func (as *Source) Set(key string, value interface{}) error {
+func (as *Source) Set(_ string, _ interface{}) error {
 	return nil
 }
 
 // Delete no use.
-func (as *Source) Delete(key string) error {
+func (as *Source) Delete(_ string) error {
 	return nil
 }
 

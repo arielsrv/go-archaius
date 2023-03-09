@@ -1,7 +1,8 @@
-package queue
+package queue_test
 
 import (
 	"errors"
+	"github.com/arielsrv/go-archaius/source/util/queue"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -14,10 +15,10 @@ func TestParallelize(t *testing.T) {
 			errCh <- errs[i]
 		}
 	}
-	err := Concurrent(len(errs), len(errs), f)
+	err := queue.Concurrent(len(errs), len(errs), f)
 	assert.NoError(t, err)
 
 	errs = append(errs, errors.New("error string"))
-	err = Concurrent(len(errs), len(errs), f)
+	err = queue.Concurrent(len(errs), len(errs), f)
 	assert.Error(t, err)
 }

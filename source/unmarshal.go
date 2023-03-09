@@ -365,7 +365,7 @@ func isSliceContainString(str string, list []string) bool {
 
 func getUniqueKeys(strSlice []string) []string {
 	keys := make(map[string]bool)
-	list := []string{}
+	var list []string
 	for _, val := range strSlice {
 		if _, value := keys[val]; !value {
 			keys[val] = true

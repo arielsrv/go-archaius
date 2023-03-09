@@ -43,7 +43,7 @@ func TestCast(t *testing.T) {
 	configvalue, err = NewValue(10, errors.New("error")).ToInt()
 	assert.Equal(t, errors.New("error"), err)
 	configvalue, err = NewValue(10, nil).ToInt()
-	assert.Equal(t, int(10), configvalue)
+	assert.Equal(t, 10, configvalue)
 	assert.Equal(t, 10, configvalue)
 	assert.Equal(t, nil, err)
 
@@ -160,8 +160,7 @@ func TestCast(t *testing.T) {
 	assert.NotEqual(t, nil, err)
 
 	t.Log("verifying ToBool method in different scenarios")
-	var boolkey = false
-	configvalue, err = NewValue(boolkey, nil).ToBool()
+	configvalue, err = NewValue(false, nil).ToBool()
 	assert.Equal(t, nil, err)
 	assert.Equal(t, false, configvalue)
 	configvalue, err = NewValue(10, nil).ToBool()

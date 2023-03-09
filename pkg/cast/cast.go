@@ -12,16 +12,7 @@
 package cast
 
 import (
-	"fmt"
-	"reflect"
-	"strconv"
-
 	ca "github.com/spf13/cast"
-)
-
-// const.
-const (
-	fmtToFloat64Failed = "unable to cast %#v of type %T to float64"
 )
 
 type configValue struct {
@@ -219,27 +210,4 @@ func (val *configValue) ToFloat64() (float64, error) {
 	}
 
 	return ca.ToFloat64E(val.value)
-}
-
-func parsingString(dataType string, value interface{}) (float64, error) {
-	parseValue, parseError := strconv.ParseFloat(dataType, 64)
-	if parseError == nil {
-		return parseValue, nil
-	}
-	return 0, fmt.Errorf(fmtToFloat64Failed, value, value)
-}
-
-func indirect(val interface{}) interface{} {
-	if val == nil {
-		return nil
-	}
-	if t := reflect.TypeOf(val); t.Kind() != reflect.Ptr {
-		// Avoid creating a reflect.value if it's not a pointer.
-		return val
-	}
-	value := reflect.ValueOf(val)
-	for value.Kind() == reflect.Ptr && !value.IsNil() {
-		value = value.Elem()
-	}
-	return value.Interface()
 }

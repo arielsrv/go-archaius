@@ -1,6 +1,7 @@
-package kie
+package kie_test
 
 import (
+	"github.com/arielsrv/go-archaius/source/remote/kie"
 	"testing"
 
 	"github.com/arielsrv/go-archaius/source/remote"
@@ -14,14 +15,14 @@ func TestGenerateLabels(t *testing.T) {
 		remote.LabelService:     "service",
 		"foo":                   "bar",
 	}
-	dimensionApp, err := GenerateLabels(DimensionApp, optionsLabels)
+	dimensionApp, err := kie.GenerateLabels(kie.DimensionApp, optionsLabels)
 	assert.NoError(t, err)
 	assert.Equal(t, map[string]string{
 		remote.LabelApp:         "app",
 		remote.LabelEnvironment: "env",
 	}, dimensionApp)
 
-	dimensionService, err := GenerateLabels(DimensionService, optionsLabels)
+	dimensionService, err := kie.GenerateLabels(kie.DimensionService, optionsLabels)
 	assert.NoError(t, err)
 	assert.Equal(t, map[string]string{
 		remote.LabelApp:         "app",

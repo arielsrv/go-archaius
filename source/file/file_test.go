@@ -38,7 +38,7 @@ type TestDynamicConfigHandler struct {
 	EventValue interface{}
 }
 
-func (t *TestDynamicConfigHandler) OnModuleEvent(events []*event.Event) {
+func (t *TestDynamicConfigHandler) OnModuleEvent(_ []*event.Event) {
 	fmt.Println("implement me")
 }
 

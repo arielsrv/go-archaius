@@ -28,7 +28,7 @@ const (
 	JSONEncoder = `application/json`
 )
 
-var availableSerializers map[string]Serializer
+var AvailableSerializers map[string]Serializer
 
 // Serializer is a interface which declares encode and decode methods.
 type Serializer interface {
@@ -39,13 +39,13 @@ type Serializer interface {
 var _ Serializer = json.Serializer{}
 
 func init() {
-	availableSerializers = make(map[string]Serializer)
-	availableSerializers[JSONEncoder] = json.Serializer{}
+	AvailableSerializers = make(map[string]Serializer)
+	AvailableSerializers[JSONEncoder] = json.Serializer{}
 }
 
 // Encode is a convenience wrapper for encoding to a []byte from an Encoder.
 func Encode(serializersType string, obj interface{}) ([]byte, error) {
-	serializer, ok := availableSerializers[serializersType]
+	serializer, ok := AvailableSerializers[serializersType]
 	if !ok {
 		errorMsg := "serializer" + serializersType + " not avaliable"
 		return []byte{}, errors.New(errorMsg)
@@ -60,7 +60,7 @@ func Encode(serializersType string, obj interface{}) ([]byte, error) {
 
 // Decode is a convenience wrapper for decoding data into an Object.
 func Decode(serializersType string, data []byte, obj interface{}) error {
-	serializer, ok := availableSerializers[serializersType]
+	serializer, ok := AvailableSerializers[serializersType]
 	if !ok {
 		errorMsg := "serializer" + serializersType + " not avaliable"
 		return errors.New(errorMsg)

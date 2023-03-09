@@ -39,7 +39,7 @@ func (t *TestDynamicConfigHandler) OnEvent(e *event.Event) {
 	t.EventValue = e.Value
 }
 
-func (t *TestDynamicConfigHandler) OnModuleEvent(events []*event.Event) {
+func (t *TestDynamicConfigHandler) OnModuleEvent(_ []*event.Event) {
 	fmt.Println("implement me")
 }
 

@@ -25,7 +25,7 @@ func main() {
 	log.Println(archaius.Get("age"))
 	log.Println(archaius.Get("name"))
 
-	err = archaius.AddFile("f3.yaml", archaius.WithFileHandler(util.FileHandler(util.UseFileNameAsKeyContentAsValue)))
+	err = archaius.AddFile("f3.yaml", archaius.WithFileHandler(util.UseFileNameAsKeyContentAsValue))
 	if err != nil {
 		log.Panicln(err)
 	}

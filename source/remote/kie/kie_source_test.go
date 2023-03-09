@@ -1,6 +1,7 @@
-package kie
+package kie_test
 
 import (
+	"github.com/arielsrv/go-archaius/source/remote/kie"
 	"testing"
 
 	"github.com/arielsrv/go-archaius"
@@ -17,6 +18,6 @@ func TestNewKieSource(t *testing.T) {
 		TenantName: "default",
 		URL:        "http://",
 	}
-	_, err := NewKieSource(opts)
+	_, err := kie.NewKieSource(opts)
 	assert.NoError(t, err)
 }

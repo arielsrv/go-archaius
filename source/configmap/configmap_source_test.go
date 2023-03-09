@@ -28,11 +28,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-type EListener struct {
-	Name      string
-	EventName string
-}
-
 func check(e error) {
 	if e != nil {
 		panic(e)
@@ -45,7 +40,7 @@ type TestDynamicConfigHandler struct {
 	EventValue interface{}
 }
 
-func (t *TestDynamicConfigHandler) OnModuleEvent(events []*event.Event) {
+func (t *TestDynamicConfigHandler) OnModuleEvent(_ []*event.Event) {
 	fmt.Println("implement me")
 }
 
@@ -260,7 +255,7 @@ func TestConfigMapSource2(t *testing.T) {
 	defer f1.Close()
 	defer os.Remove(file1)
 
-	_, err = io.WriteString(f1, string(f1content))
+	_, err = io.WriteString(f1, f1content)
 	check(err)
 
 	cmSource := NewConfigMapSource()

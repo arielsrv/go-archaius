@@ -97,7 +97,7 @@ func (*Source) GetSourceName() string {
 }
 
 // Watch dynamically handles a environment configuration.
-func (*Source) Watch(callback source.EventHandler) error {
+func (*Source) Watch(_ source.EventHandler) error {
 	//TODO env change
 	return nil
 }
@@ -109,16 +109,16 @@ func (es *Source) Cleanup() error {
 }
 
 // AddDimensionInfo no use.
-func (es *Source) AddDimensionInfo(labels map[string]string) error {
+func (es *Source) AddDimensionInfo(_ map[string]string) error {
 	return nil
 }
 
 // Set no use.
-func (es *Source) Set(key string, value interface{}) error {
+func (es *Source) Set(_ string, _ interface{}) error {
 	return nil
 }
 
 // Delete no use.
-func (es *Source) Delete(key string) error {
+func (es *Source) Delete(_ string) error {
 	return nil
 }

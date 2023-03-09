@@ -15,11 +15,11 @@ type FileHandler func(filePath string, content []byte) (map[string]interface{}, 
 
 // Convert2JavaProps is a FileHandler
 // it convert the yaml content into java props.
-func Convert2JavaProps(p string, content []byte) (map[string]interface{}, error) {
+func Convert2JavaProps(_ string, content []byte) (map[string]interface{}, error) {
 	configMap := make(map[string]interface{})
 
 	ss := yaml.MapSlice{}
-	err := yaml.Unmarshal([]byte(content), &ss)
+	err := yaml.Unmarshal(content, &ss)
 	if err != nil {
 		return nil, fmt.Errorf("yaml unmarshal [%s] failed, %s", content, err)
 	}
@@ -101,6 +101,3 @@ func UseFileNameAsKeyContentAsValue(p string, content []byte) (map[string]interf
 }
 
 // Convert2configMap is legacy API.
-func Convert2configMap(p string, content []byte) (map[string]interface{}, error) {
-	return UseFileNameAsKeyContentAsValue(p, content)
-}

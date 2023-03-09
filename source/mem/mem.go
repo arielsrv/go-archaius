@@ -33,7 +33,7 @@ const (
 	memoryVariableSourcePriority = 1
 )
 
-var ErrSourceNotReady = errors.New("source is not ready")
+var _ = errors.New("source is not ready")
 
 // Source is a struct.
 type Source struct {
@@ -106,7 +106,7 @@ func (ms *Source) Cleanup() error {
 }
 
 // AddDimensionInfo  is none function.
-func (ms *Source) AddDimensionInfo(labels map[string]string) error {
+func (ms *Source) AddDimensionInfo(_ map[string]string) error {
 	return nil
 }
 

@@ -18,6 +18,7 @@ package kie
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"strings"
 	"sync"
@@ -34,8 +35,8 @@ import (
 // One dimension corresponds to one label combination.
 type DimensionName string
 
-// Priority of dimension in dimensionPrecedence array must from low to high.
-var dimensionPrecedence = []DimensionName{
+// Priority of dimension in DimensionPrecedence array must from low to high.
+var DimensionPrecedence = []DimensionName{
 	DimensionApp,
 	DimensionService,
 }
@@ -107,7 +108,7 @@ func NewKie(options remote.Options) (*Kie, error) {
 
 func initDimensions(optionsLabels map[string]string) (map[DimensionName]*Dimension, error) {
 	dimensions := make(map[DimensionName]*Dimension)
-	for _, dimension := range dimensionPrecedence {
+	for _, dimension := range DimensionPrecedence {
 		labels, err := GenerateLabels(dimension, optionsLabels)
 		if err != nil {
 			return nil, err
@@ -121,13 +122,13 @@ func initDimensions(optionsLabels map[string]string) (map[DimensionName]*Dimensi
 }
 
 // PullConfigs is the implementation of Kie to pull all the configurations from Config-Server.
-func (k *Kie) PullConfigs(labels ...map[string]string) (map[string]interface{}, error) {
+func (k *Kie) PullConfigs() (map[string]interface{}, error) {
 	var revisionLock sync.Mutex
 	var validRevisions []int
 	getKVDimensionally := func(i int, errCh chan error) {
 		kv, responseRevision, err := k.c.List(context.Background(),
 			client.WithGetProject(k.opts.ProjectID),
-			client.WithLabels(k.getDimensionLabels(dimensionPrecedence[i])),
+			client.WithLabels(k.getDimensionLabels(DimensionPrecedence[i])),
 			client.WithExact(),
 			client.WithRevision(k.currentRevision))
 		if responseRevision >= 0 {
@@ -135,18 +136,18 @@ func (k *Kie) PullConfigs(labels ...map[string]string) (map[string]interface{}, 
 			validRevisions = append(validRevisions, responseRevision)
 			revisionLock.Unlock()
 		}
-		if err != nil && err != client.ErrKeyNotExist {
+		if err != nil && !errors.Is(err, client.ErrKeyNotExist) {
 			//If the error is the no changes error, return immediately,
 			//otherwise append the error
-			if err != client.ErrNoChanges {
+			if !errors.Is(err, client.ErrNoChanges) {
 				errCh <- err
 			}
 			return
 		}
 		//If found an updated kv or no kv was found, then update configs cache
-		k.setDimensionConfigs(kv, dimensionPrecedence[i])
+		k.SetDimensionConfigs(kv, DimensionPrecedence[i])
 	}
-	err := queue.Concurrent(len(dimensionPrecedence), len(dimensionPrecedence), getKVDimensionally)
+	err := queue.Concurrent(len(DimensionPrecedence), len(DimensionPrecedence), getKVDimensionally)
 	if err != nil {
 		return nil, err
 	}
@@ -160,12 +161,12 @@ func (k *Kie) PullConfigs(labels ...map[string]string) (map[string]interface{}, 
 		}
 		k.currentRevision = currentRevision
 	}
-	return k.mergeConfig(), nil
+	return k.MergeConfig(), nil
 }
 
 // Watch watch the configuration changes and update in real time.
-func (k *Kie) Watch(f func(map[string]interface{}), errHandler func(err error), labels map[string]string) error {
-	for _, dimension := range dimensionPrecedence {
+func (k *Kie) Watch(f func(map[string]interface{}), errHandler func(err error)) error {
+	for _, dimension := range DimensionPrecedence {
 		go k.watchKVDimensionally(f, errHandler, dimension)
 	}
 	return nil
@@ -189,23 +190,23 @@ func (k *Kie) watchKVDimensionally(f func(map[string]interface{}), errHandler fu
 		if responseRevision >= 0 {
 			revision = responseRevision
 		}
-		if err != nil && err != client.ErrKeyNotExist {
+		if err != nil && !errors.Is(err, client.ErrKeyNotExist) {
 			//If the error is the no changes error, execute the next watch immediately,
 			//otherwise print the error and wait for some time.
-			if err != client.ErrNoChanges {
+			if !errors.Is(err, client.ErrNoChanges) {
 				errHandler(err)
 				time.Sleep(time.Second * time.Duration(k.watchTimeOut))
 			}
 			continue
 		}
 		//If found an updated kv or no kv was found, then update configs cache
-		if updated := k.setDimensionConfigs(kv, dimension); updated {
-			f(k.mergeConfig())
+		if updated := k.SetDimensionConfigs(kv, dimension); updated {
+			f(k.MergeConfig())
 		}
 	}
 }
 
-func (k *Kie) setDimensionConfigs(kvs *client.KVResponse, dimension DimensionName) bool {
+func (k *Kie) SetDimensionConfigs(kvs *client.KVResponse, dimension DimensionName) bool {
 	if k.dimensions[dimension] == nil {
 		return false
 	}
@@ -233,10 +234,10 @@ func (k *Kie) setDimensionConfigs(kvs *client.KVResponse, dimension DimensionNam
 	return true
 }
 
-func (k *Kie) mergeConfig() map[string]interface{} {
+func (k *Kie) MergeConfig() map[string]interface{} {
 	configs := make(map[string]interface{})
 	if k.dimensions != nil {
-		for _, dimension := range dimensionPrecedence {
+		for _, dimension := range DimensionPrecedence {
 			if k.dimensions[dimension] != nil {
 				k.dimensions[dimension].RLock()
 				for k, v := range k.dimensions[dimension].config {

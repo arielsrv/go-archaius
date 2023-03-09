@@ -40,37 +40,34 @@ import (
 const (
 	defaultTimeout = 10 * time.Second
 	numberSign     = "%23"
-	//StatusUP is a variable of type string.
-	StatusUP = "UP"
+
 	//HeaderContentType is a variable of type string.
 	HeaderContentType = "Content-Type"
 	//HeaderUserAgent is a variable of type string.
 	HeaderUserAgent = "User-Agent"
 	//HeaderEnvironment specifies the environment of a service.
-	HeaderEnvironment        = "X-Environment"
-	members                  = "/configuration/members"
-	dimensionsInfo           = "dimensionsInfo"
-	dynamicConfigAPI         = `/configuration/refresh/items`
-	getConfigAPI             = `/configuration/items`
-	defaultContentType       = "application/json"
-	envProjectID             = "CSE_PROJECT_ID"
-	packageInitError         = "package not initialize successfully"
+	HeaderEnvironment  = "X-Environment"
+	members            = "/configuration/members"
+	dimensionsInfo     = "dimensionsInfo"
+	dynamicConfigAPI   = `/configuration/refresh/items`
+	getConfigAPI       = `/configuration/items`
+	defaultContentType = "application/json"
+	envProjectID       = "CSE_PROJECT_ID"
+
 	emptyConfigServerMembers = "empty config server member"
 	emptyConfigServerConfig  = "empty config server passed"
-	// Name of the Plugin.
-	Name = "config_center"
 )
 
 var (
 	//HeaderTenantName is a variable of type string.
 	HeaderTenantName = "X-Tenant-Name"
 	//ConfigMembersPath is a variable of type string.
-	ConfigMembersPath = ""
+	_ = ""
 	//ConfigPath is a variable of type string.
 	ConfigPath = ""
 	//ConfigRefreshPath is a variable of type string.
 	ConfigRefreshPath = ""
-	autoDiscoverable  = false
+	_                 = false
 	apiVersionConfig  = ""
 	environmentConfig = ""
 )
@@ -131,15 +128,15 @@ func updateAPIPath(apiVersion string) {
 	}
 	switch apiVersion {
 	case "v3":
-		ConfigMembersPath = "/v3/" + projectID + members
+		_ = "/v3/" + projectID + members
 		ConfigPath = "/v3/" + projectID + getConfigAPI
 		ConfigRefreshPath = "/v3/" + projectID + dynamicConfigAPI
 	case "v2":
-		ConfigMembersPath = "/members"
+		_ = "/members"
 		ConfigPath = "/configuration/v2/items"
 		ConfigRefreshPath = "/configuration/v2/refresh/items"
 	default:
-		ConfigMembersPath = "/v3/" + projectID + members
+		_ = "/v3/" + projectID + members
 		ConfigPath = "/v3/" + projectID + getConfigAPI
 		ConfigRefreshPath = "/v3/" + projectID + dynamicConfigAPI
 	}

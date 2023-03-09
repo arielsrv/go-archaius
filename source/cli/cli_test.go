@@ -29,9 +29,9 @@ import (
 
 type TestDynamicConfigHandler struct{}
 
-func (t *TestDynamicConfigHandler) OnEvent(e *event.Event) {}
+func (t *TestDynamicConfigHandler) OnEvent(_ *event.Event) {}
 
-func (t *TestDynamicConfigHandler) OnModuleEvent(events []*event.Event) {
+func (t *TestDynamicConfigHandler) OnModuleEvent(_ []*event.Event) {
 	fmt.Println("implement me")
 }
 
