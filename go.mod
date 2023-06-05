@@ -9,7 +9,7 @@ require (
 	github.com/go-chassis/foundation v0.4.0
 	github.com/go-chassis/kie-client v0.2.0
 	github.com/gorilla/websocket v1.5.0
-	github.com/sirupsen/logrus v1.9.0
+	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/cast v1.5.0
 	github.com/stretchr/testify v1.8.2
 	gopkg.in/yaml.v2 v2.4.0
