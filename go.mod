@@ -5,7 +5,7 @@ go 1.20
 require (
 	github.com/Shonminh/apollo-client v0.6.0
 	github.com/antonfisher/nested-logrus-formatter v1.3.1
-	github.com/fsnotify/fsnotify v1.6.0
+	github.com/fsnotify/fsnotify v1.7.0
 	github.com/go-chassis/foundation v0.4.0
 	github.com/go-chassis/kie-client v0.2.0
 	github.com/gorilla/websocket v1.5.0
